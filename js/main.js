@@ -145,28 +145,38 @@ window.toggleProjectDetails = function(link) {
 
 // Dark Mode Toggle
 function initDarkMode() {
-  const toggle = document.getElementById('checkbox');
+  const toggleBtn = document.getElementById('theme-toggle');
   const body = document.body;
+  const sunIcon = document.querySelector('.sun-icon');
+  const moonIcon = document.querySelector('.moon-icon');
+
+  if (!toggleBtn || !sunIcon || !moonIcon) return;
 
   // Check for saved preference or default to light mode
   const currentTheme = localStorage.getItem('theme') || 'light';
-  if (currentTheme === 'dark') {
-    body.classList.add('dark-mode');
-    if (toggle) toggle.checked = true;
+
+  function updateIcons(isDark) {
+    if (isDark) {
+      sunIcon.classList.add('hidden');
+      moonIcon.classList.remove('hidden');
+    } else {
+      sunIcon.classList.remove('hidden');
+      moonIcon.classList.add('hidden');
+    }
   }
 
-  // Listen for toggle changes
-  if (toggle) {
-    toggle.addEventListener('change', function() {
-      if (this.checked) {
-        body.classList.add('dark-mode');
-        localStorage.setItem('theme', 'dark');
-      } else {
-        body.classList.remove('dark-mode');
-        localStorage.setItem('theme', 'light');
-      }
-    });
+  if (currentTheme === 'dark') {
+    body.classList.add('dark-mode');
+    updateIcons(true);
   }
+
+  // Listen for toggle clicks
+  toggleBtn.addEventListener('click', function() {
+    body.classList.toggle('dark-mode');
+    const isDark = body.classList.contains('dark-mode');
+    updateIcons(isDark);
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  });
 }
 
 // Progress Bar
