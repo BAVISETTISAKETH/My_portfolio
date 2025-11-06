@@ -1,5 +1,5 @@
 @import "./reset.css";
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap") layer(fonts);
 
 :root {
   --primary-bg-color: #f7fbfd;
@@ -29,6 +29,8 @@ body {
   color: var(--main-text-color);
   font-family: "Poppins", sans-serif;
   letter-spacing: -0.15px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .container {
@@ -64,10 +66,10 @@ body {
   text-align: center;
   white-space: nowrap;
   cursor: pointer;
-  transition: all 0.3s;
   background-color: var(--primary-accent);
   border: 2px solid var(--primary-accent);
-  transition: all 0.3s ease-in;
+  transition: background-color 0.2s ease-in, border-color 0.2s ease-in, transform 0.1s ease;
+  will-change: background-color, border-color;
 }
 
 .btn:hover,
@@ -87,7 +89,8 @@ body {
   font-weight: 700;
   border: 2px solid var(--primary-accent);
   color: var(--primary-accent);
-  transition: all 0.3s ease-in;
+  transition: background-color 0.2s ease-in, border-color 0.2s ease-in, color 0.2s ease-in;
+  will-change: background-color, border-color, color;
 }
 
 .btn-white:hover,
@@ -105,7 +108,8 @@ body {
   background: var(--secondary-accent);
   border: 2px solid var(--secondary-accent);
   color: var(--white-color);
-  transition: all 0.3s ease-in;
+  transition: background-color 0.2s ease-in, border-color 0.2s ease-in;
+  will-change: background-color, border-color;
 }
 
 .btn-red:hover,
@@ -159,7 +163,9 @@ h5 {
   background-color: rgba(255, 255, 255, 0.95);
   padding-top: 0;
   padding-bottom: 0;
-  transition: all 0.3s ease-in-out;
+  transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+  will-change: background-color, transform;
+  transform: translateZ(0);
 }
 
 .logo {
@@ -361,7 +367,9 @@ h5 {
   background-color: var(--secondary-accent);
   height: 4px;
   width: 0; /* Initial width is 0 */
-  transition: width 1.5s ease-in-out; /* Smooth transition for the fill */
+  transition: width 1.5s ease-out;
+  will-change: width;
+  transform: translateZ(0);
 }
 
 .about-download-btn {
@@ -383,8 +391,7 @@ h5 {
   display: block;
   height: 50px;
   margin: 0 auto 20px;
-  filter: invert(33%) sepia(7%) saturate(243%) hue-rotate(145deg)
-ß    brightness(94%);
+  filter: invert(33%) sepia(7%) saturate(243%) hue-rotate(145deg) brightness(94%);
 }
 
 .service-card-title {
@@ -440,15 +447,15 @@ h5 {
 }
 
 .project-box:hover .project-img {
-  transform: scale(1.1);
-  transition: all 2s cubic-bezier(0.23, 1, 0.32, 1) 0s;
+  transform: scale(1.1) translateZ(0);
   width: 100%;
 }
 
 .project-img {
-  transform: scale(1);
+  transform: scale(1) translateZ(0);
   width: 100%;
-  transition: all 2s cubic-bezier(0.23, 1, 0.32, 1) 0s;
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
 }
 
 .project-mask {
@@ -604,7 +611,9 @@ h5 {
   opacity: 0;
   visibility: hidden;
   border-radius: 2px;
-  transition: opacity 350ms, visibility 350ms;
+  transition: opacity 250ms ease, visibility 250ms ease, transform 0.2s ease;
+  will-change: opacity, visibility, transform;
+  transform: translateZ(0);
 }
 
 .goToTop a {
@@ -727,8 +736,10 @@ h5 {
   flex: 1 1 calc(100% - 20px); /* One item per row with space between */
   margin: 10px;
   cursor: pointer;
-  transition: all 0.3s ease-in-out;
+  transition: transform 0.2s ease-in-out;
   box-sizing: border-box;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .timeline-content {
@@ -736,13 +747,15 @@ h5 {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease-in-out;
+  transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   overflow: hidden;
   height: 100%;
+  will-change: background-color;
 }
 
 .timeline-content:hover {
   background-color: #e6f2ff;
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
 }
 
 .timeline-content h3 {
@@ -843,11 +856,14 @@ h5 {
   padding: 20px;
   border-radius: 8px; /* Rounded corners */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  transition: transform 0.3s ease; /* Smooth transition for hover effect */
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .education-item:hover {
-  transform: translateY(-10px); /* Lift the item on hover */
+  transform: translateY(-10px) translateZ(0);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .education-item h3 {
@@ -898,13 +914,16 @@ h5 {
   padding: 20px;
   border-radius: 8px; /* Rounded corners */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  transition: transform 0.3s ease; /* Smooth transition for hover effect */
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  will-change: transform;
+  transform: translateZ(0);
   width: calc(33.333% - 20px); /* Three items per row */
   box-sizing: border-box;
 }
 
 .project-item:hover {
-  transform: translateY(-10px); /* Lift the item on hover */
+  transform: translateY(-10px) translateZ(0);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .project-item h3 {

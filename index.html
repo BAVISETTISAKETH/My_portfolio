@@ -5,14 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sai Saketh Bavisetti</title>
     <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon" />
+
+    <!-- Preconnect for faster font loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+
+    <!-- Critical CSS -->
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/media.css" />
+
+    <!-- AOS CSS with media query to prevent render blocking -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"
       integrity="sha512-1cK78a1o+ht2JcaW6g8OXYwqpev9+6GqOkz9xmBN9iUUhIndKtxwILGWYOSibOKjLsEdjyjZvYDq/cZwNeak0w=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
+      media="print"
+      onload="this.media='all'"
     />
   </head>
 
@@ -83,7 +94,7 @@
             </div>
           </div>
           <div class="hero-img">
-            <img src="img/hero/hero.png" alt="Sai Saketh Bavisetti" />
+            <img src="img/hero/hero.png" alt="Sai Saketh Bavisetti" loading="lazy" />
           </div>
         </div>
       </div>
@@ -209,7 +220,7 @@
           <h2 class="title">Education</h2>
         </div>
         <div class="education-content">
-          <div class="education-item" data-aos="fade-up" data-aos-duration="1000">
+          <div class="education-item" data-aos="fade-up" data-aos-duration="600">
             <h3>San Francisco State University</h3>
             <p class="education-degree">Master of Science in Data Science and Artificial Intelligence</p>
             <p class="education-gpa">GPA: 3.53</p>
@@ -217,7 +228,7 @@
             <p class="education-location">San Francisco, CA</p>
             <p class="education-date">Graduating: May 2025</p>
           </div>
-          <div class="education-item" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="100">
+          <div class="education-item" data-aos="fade-up" data-aos-duration="600">
             <h3>Gandhi Institute of Technology and Management (GITAM)</h3>
             <p class="education-degree">BTech in Computer Science Engineering</p>
             <p class="education-gpa">GPA: 7.94/10</p>
@@ -311,7 +322,7 @@
           <h2 class="title">Projects</h2>
         </div>
         <div class="projects-content">
-          <div class="project-item" data-aos="fade-up" data-aos-duration="1000">
+          <div class="project-item" data-aos="fade-up" data-aos-duration="600">
             <h3>Intelligent University Query Resolution System</h3>
             <p>Jan 2025 - Present</p>
             <p>Associated with San Francisco State University</p>
@@ -320,55 +331,55 @@
               <!-- Project details here -->
             </div>
           </div>
-          <div class="project-item" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="100">
+          <div class="project-item" data-aos="fade-up" data-aos-duration="600">
             <h3>Data Visualization Chatbot</h3>
             <p>Aug 2024 - Dec 2024</p>
             <p>Associated with San Francisco State University</p>
             <a href="https://github.com/BAVISETTISAKETH/Graduate-Seminar-Final-Version" class="project-link">View Project</a>
           </div>
-          <div class="project-item" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+          <div class="project-item" data-aos="fade-up" data-aos-duration="600">
             <h3>Scholar Eats</h3>
             <p>May 2024 - Aug 2024</p>
             <p>Associated with San Francisco State University</p>
             <a href="https://github.com/sfsu-joseo/csc648-848-05-sw-engineering-su24-T4" class="project-link">View Project</a>
           </div>
-          <div class="project-item" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="300">
+          <div class="project-item" data-aos="fade-up" data-aos-duration="600">
             <h3>Formula 1 Analysis with Precision and Accuracy Modelling</h3>
             <p>Jan 2024 - May 2024</p>
             <p>Associated with San Francisco State University</p>
             <a href="link-to-project-details" class="project-link">View Project</a>
           </div>
-          <div class="project-item" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">
+          <div class="project-item" data-aos="fade-up" data-aos-duration="600">
             <h3>Exploring Predictors of Student Retention and Academic Success</h3>
             <p>Jan 2024 - Jan 2024</p>
             <p>Associated with San Francisco State University</p>
             <a href="link-to-project-details" class="project-link">View Project</a>
           </div>
-          <div class="project-item" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="500">
+          <div class="project-item" data-aos="fade-up" data-aos-duration="600">
             <h3>Secure Coding and Software Security</h3>
             <p>Aug 2023 - Dec 2023</p>
             <p>Associated with California State University-Sacramento</p>
             <a href="link-to-project-details" class="project-link">View Project</a>
           </div>
-          <div class="project-item" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="600">
+          <div class="project-item" data-aos="fade-up" data-aos-duration="600">
             <h3>Analysis of Crypto</h3>
             <p>Jan 2023 - May 2023</p>
             <p>Associated with Gandhi Institute of Technology & Management (GITAM) University, Visakhapatnam</p>
             <a href="link-to-project-details" class="project-link">View Project</a>
           </div>
-          <div class="project-item" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="700">
+          <div class="project-item" data-aos="fade-up" data-aos-duration="600">
             <h3>Movie Recommendation System Using Collaborative Filtering</h3>
             <p>Aug 2022 - May 2023</p>
             <p>Associated with Gandhi Institute of Technology & Management (GITAM) University, Visakhapatnam</p>
             <a href="link-to-project-details" class="project-link">View Project</a>
           </div>
-          <div class="project-item" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="800">
+          <div class="project-item" data-aos="fade-up" data-aos-duration="600">
             <h3>Mental Health and Suicide Analysis due to Stress and Education Management in Undergrad Universities</h3>
             <p>May 2021 - Sep 2022</p>
             <p>Associated with Gandhi Institute of Technology & Management (GITAM) University, Visakhapatnam</p>
             <a href="link-to-project-details" class="project-link">View Project</a>
           </div>
-          <div class="project-item" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="900">
+          <div class="project-item" data-aos="fade-up" data-aos-duration="600">
             <h3>Automobile Analytics</h3>
             <p>May 2022 - Jun 2022</p>
             <p>Associated with Google</p>
@@ -426,44 +437,7 @@
       </a>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js" integrity="sha512-A7AYk1fGKX6S2SsHywmPkrnzTZHrgiVT7GcQkLGDe2ev0aWb8zejytzS8wjo7PGEXKqJOrjQ4oORtnimIRZBtw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
-      // Define toggleDetails globally before loading modules
-      function toggleDetails(id) {
-        const element = document.getElementById(id);
-        if (element) {
-          if (element.classList.contains('hidden')) {
-            element.classList.remove('hidden');
-          } else {
-            element.classList.add('hidden');
-          }
-        }
-      }
-
-      // Theme toggle functionality
-      const currentTheme = localStorage.getItem('theme');
-      const toggleSwitch = document.querySelector('#theme-toggle');
-
-      if (currentTheme && toggleSwitch) {
-        document.body.classList.add(currentTheme);
-
-        if (currentTheme === 'dark-mode') {
-          toggleSwitch.checked = true;
-        }
-      }
-
-      if (toggleSwitch) {
-        toggleSwitch.addEventListener('change', function (e) {
-          if (e.target.checked) {
-            document.body.classList.add('dark-mode');
-            localStorage.setItem('theme', 'dark-mode');
-          } else {
-            document.body.classList.remove('dark-mode');
-            localStorage.setItem('theme', 'light-mode');
-          }
-        });
-      }
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js" integrity="sha512-A7AYk1fGKX6S2SsHywmPkrnzTZHrgiVT7GcQkLGDe2ev0aWb8zejytzS8wjo7PGEXKqJOrjQ4oORtnimIRZBtw==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
     <script type="module" src="js/main.js"></script>
   </body>
 </html>
