@@ -36,6 +36,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   form();
   skillbar();
+  initDarkMode();
+  initProgressBar();
+  initProjectFilters();
 
   const nav = document.querySelector("#nav");
   const navBtn = document.querySelector("#nav-btn");
@@ -139,3 +142,90 @@ window.toggleProjectDetails = function(link) {
     projectDetails.classList.toggle('hidden');
   }
 };
+
+// Dark Mode Toggle
+function initDarkMode() {
+  const toggle = document.getElementById('checkbox');
+  const body = document.body;
+
+  // Check for saved preference or default to light mode
+  const currentTheme = localStorage.getItem('theme') || 'light';
+  if (currentTheme === 'dark') {
+    body.classList.add('dark-mode');
+    if (toggle) toggle.checked = true;
+  }
+
+  // Listen for toggle changes
+  if (toggle) {
+    toggle.addEventListener('change', function() {
+      if (this.checked) {
+        body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+  }
+}
+
+// Progress Bar
+function initProgressBar() {
+  const progressBar = document.getElementById('progressBar');
+  if (!progressBar) return;
+
+  const updateProgressBar = throttle(() => {
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight - windowHeight;
+    const scrolled = window.scrollY;
+    const progress = (scrolled / documentHeight) * 100;
+    progressBar.style.width = progress + '%';
+  }, 16);
+
+  window.addEventListener('scroll', updateProgressBar, { passive: true });
+}
+
+// Project Filtering
+function initProjectFilters() {
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const projectItems = document.querySelectorAll('.project-item');
+
+  if (!filterBtns.length || !projectItems.length) return;
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      // Remove active class from all buttons
+      filterBtns.forEach(b => b.classList.remove('active'));
+      // Add active class to clicked button
+      this.classList.add('active');
+
+      const filter = this.getAttribute('data-filter');
+
+      projectItems.forEach(item => {
+        if (filter === 'all') {
+          item.style.display = 'block';
+          // Trigger reflow for animation
+          setTimeout(() => {
+            item.style.opacity = '1';
+            item.style.transform = 'translateY(0)';
+          }, 10);
+        } else {
+          const category = item.getAttribute('data-category');
+          if (category === filter) {
+            item.style.display = 'block';
+            setTimeout(() => {
+              item.style.opacity = '1';
+              item.style.transform = 'translateY(0)';
+            }, 10);
+          } else {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+              item.style.display = 'none';
+            }, 300);
+          }
+        }
+      });
+    });
+  });
+}
