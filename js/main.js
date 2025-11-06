@@ -139,4 +139,3 @@ window.toggleProjectDetails = function(link) {
     projectDetails.classList.toggle('hidden');
   }
 };
-
