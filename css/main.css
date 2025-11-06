@@ -1182,6 +1182,121 @@ body.dark-mode .project-description h4 {
   text-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
 }
 
+/* Dark mode - Education Section */
+body.dark-mode .education-item h3 {
+  color: #3b82f6;
+  text-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+}
+
+body.dark-mode .education-degree {
+  color: #cbd5e1;
+  font-weight: bold;
+}
+
+body.dark-mode .education-gpa,
+body.dark-mode .education-coursework,
+body.dark-mode .education-location,
+body.dark-mode .education-date {
+  color: #94a3b8;
+}
+
+/* Dark mode - Experience Section */
+body.dark-mode .experience-title .title {
+  color: #3b82f6;
+  text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+body.dark-mode .timeline-content h3 {
+  color: #f1f5f9;
+}
+
+body.dark-mode .experience-position {
+  color: #3b82f6;
+}
+
+body.dark-mode .experience-date,
+body.dark-mode .experience-location {
+  color: #94a3b8;
+}
+
+body.dark-mode .timeline-details {
+  color: #cbd5e1;
+  border-top-color: #3b82f6;
+}
+
+body.dark-mode .timeline-content ul li {
+  color: #cbd5e1;
+}
+
+body.dark-mode .custom-bullet li::before {
+  color: #3b82f6;
+}
+
+/* Dark mode - About Section */
+body.dark-mode .about-title .title {
+  color: #3b82f6;
+  text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+body.dark-mode .about-descr {
+  color: #cbd5e1;
+}
+
+body.dark-mode .skill-title,
+body.dark-mode .skill-percent {
+  color: #f1f5f9;
+}
+
+/* Dark mode - Projects Section */
+body.dark-mode .projects-title .title,
+body.dark-mode .featured-projects-title .title {
+  color: #3b82f6;
+  text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+body.dark-mode .section-subtitle {
+  color: #94a3b8;
+}
+
+body.dark-mode .project-date {
+  color: #94a3b8;
+}
+
+/* Dark mode - Contact Section */
+body.dark-mode .contact-title .title {
+  color: #3b82f6;
+  text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+body.dark-mode .contact-content p {
+  color: #cbd5e1;
+}
+
+body.dark-mode .error-message {
+  color: #f87171;
+}
+
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+  color: #64748b;
+}
+
+/* Dark mode - Tools Section */
+body.dark-mode .tools-title .title {
+  color: #3b82f6;
+  text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+body.dark-mode .tool-name {
+  color: #cbd5e1;
+}
+
+/* Dark mode - Education Section Title */
+body.dark-mode .education-title .title {
+  color: #3b82f6;
+  text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
 /* Skip to Content Link */
 .skip-to-content {
   position: absolute;
