@@ -57,19 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  const timelineItems = document.querySelectorAll('.timeline-item');
-
-  timelineItems.forEach(item => {
-    item.addEventListener('click', function() {
-      const details = this.querySelector('.timeline-details');
-      if (details.style.display === 'block') {
-        details.style.display = 'none';
-      } else {
-        details.style.display = 'block';
-      }
-    });
-  });
-
   const navbar = document.querySelector(".navbar");
 
   window.addEventListener("scroll", function() {
@@ -80,13 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-
-function toggleDetails(id) {
-  const element = document.getElementById(id);
-  if (element) {
-    element.classList.toggle('hidden');
-  }
-}
 
 function showDetails(id) {
   const details = {
