@@ -15,14 +15,17 @@ const form = () => {
           method: "POST",
           body: formData,
         });
-        if (!response.ok) {
-          responseMessage.textContent = result;
-        }
 
         const result = await response.text();
-        responseMessage.textContent = result;
+
+        if (!response.ok) {
+          responseMessage.textContent = "Error: " + (result || "Failed to send message");
+        } else {
+          responseMessage.textContent = result;
+        }
       } catch (error) {
         console.error(error.message);
+        responseMessage.textContent = "Error: Unable to send message";
       }
     }
 
