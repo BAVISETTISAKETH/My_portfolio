@@ -1,4 +1,4 @@
-const skillbar = () => {
+function skillbar() {
   const skillBars = document.querySelectorAll(".skill");
 
   // Use Intersection Observer for better performance
@@ -48,4 +48,3 @@ const skillbar = () => {
   });
 };
 
-export default skillbar;

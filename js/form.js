@@ -1,4 +1,4 @@
-const form = () => {
+function form() {
   const contactForm = document.querySelector(".contactForm");
   const responseMessage = document.querySelector(".response");
   const nameInput = document.getElementById("name");
@@ -157,4 +157,3 @@ const form = () => {
     }, 5000);
   });
 };
-export default form;

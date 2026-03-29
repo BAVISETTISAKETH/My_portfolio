@@ -851,6 +851,62 @@ h5 {
   gap: 20px; /* Space between education items */
 }
 
+/* Org logo header — shared by Education & Experience */
+.org-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.org-header > div:last-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.org-header h3 {
+  margin: 0 0 3px 0 !important;
+}
+
+.org-logo-wrap {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  border: 1.5px solid rgba(0, 0, 0, 0.09);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.07);
+}
+
+.org-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 5px;
+}
+
+.org-logo-fallback {
+  width: 100%;
+  height: 100%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.3px;
+  border-radius: 8px;
+}
+
+body.dark-mode .org-logo-wrap {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
 .education-item {
   background: #ffffff; /* White background for content */
   padding: 20px;
@@ -1643,8 +1699,14 @@ body.dark-mode .project-category.data-viz {
 }
 
 .tool-icon {
-  font-size: 40px;
+  width: 48px;
+  height: 48px;
   margin-bottom: 10px;
+  object-fit: contain;
+}
+
+body.dark-mode .tool-icon-invert {
+  filter: invert(1) brightness(1.5);
 }
 
 .tool-name {
@@ -1652,6 +1714,173 @@ body.dark-mode .project-category.data-viz {
   font-weight: 500;
   color: var(--main-text-color);
   text-align: center;
+}
+
+/* Recommendations Section */
+.recommendations {
+  padding: 7rem 0;
+}
+
+.recommendations-title {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.recommendations-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  margin-top: 40px;
+  align-items: start;
+}
+
+.recommendation-card {
+  background: var(--white-color);
+  border-radius: 16px;
+  padding: 32px 28px 24px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.recommendation-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
+}
+
+.rec-quote-mark {
+  font-size: 72px;
+  line-height: 0.6;
+  font-family: Georgia, serif;
+  color: var(--secondary-accent);
+  opacity: 0.2;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.rec-text {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--supportive-text-color);
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.rec-text.expanded {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+
+.read-more-btn {
+  background: none;
+  border: none;
+  color: var(--secondary-accent);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 10px 0 0;
+  text-align: left;
+  letter-spacing: 0.3px;
+}
+
+.read-more-btn:hover {
+  opacity: 0.75;
+}
+
+.rec-divider {
+  height: 1px;
+  background: var(--primary-bg-color);
+  margin: 20px 0;
+}
+
+.rec-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rec-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid rgba(0, 0, 0, 0.08);
+}
+
+.rec-info {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.rec-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--main-text-color);
+  margin: 0 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rec-title {
+  font-size: 11px;
+  color: var(--gray-text-color);
+  margin: 0 0 2px;
+  line-height: 1.4;
+}
+
+.rec-relation {
+  font-size: 11px;
+  color: var(--secondary-accent);
+  font-style: italic;
+  margin: 0;
+  font-weight: 500;
+}
+
+.rec-linkedin-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #e8f3fb;
+  border-radius: 6px;
+  padding: 5px 8px;
+  flex-shrink: 0;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.rec-linkedin-badge:hover {
+  background: #d0e8f5;
+}
+
+.rec-linkedin-badge span {
+  font-size: 11px;
+  color: #0077B5;
+  font-weight: 700;
+}
+
+/* Dark mode */
+body.dark-mode .recommendation-card {
+  background: var(--dark-card-bg, #1e2535);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+body.dark-mode .rec-divider {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .rec-linkedin-badge {
+  background: rgba(0, 119, 181, 0.15);
+}
+
+body.dark-mode .rec-linkedin-badge:hover {
+  background: rgba(0, 119, 181, 0.25);
 }
 
 /* Form Validation Styles */
@@ -1728,6 +1957,49 @@ body.dark-mode .project-category.data-viz {
   height: 300px;
 }
 
+/* =============================================
+   Cursor Glow Orb
+   ============================================= */
+#cursor-glow {
+  position: fixed;
+  top: -9999px;
+  left: -9999px;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  opacity: 0;
+  will-change: left, top;
+  /* Light mode — warm amber/gold */
+  background: radial-gradient(
+    circle,
+    rgba(255, 185, 80, 0.32) 0%,
+    rgba(230, 140, 50, 0.16) 38%,
+    rgba(200, 100, 40, 0.06) 60%,
+    transparent 72%
+  );
+  filter: blur(10px);
+  transition: opacity 0.5s ease;
+}
+
+/* Dark mode — soft purple */
+body.dark-mode #cursor-glow {
+  background: radial-gradient(
+    circle,
+    rgba(210, 170, 255, 0.35) 0%,
+    rgba(180, 130, 255, 0.18) 38%,
+    rgba(150, 100, 255, 0.07) 60%,
+    transparent 72%
+  );
+  filter: blur(10px);
+}
+
+/* Hide on touch devices — they have no cursor */
+@media (hover: none) {
+  #cursor-glow { display: none; }
+}
+
 /* Focus Indicators for Accessibility */
 a:focus,
 button:focus,
@@ -1739,6 +2011,239 @@ textarea:focus {
 
 .nav-link:focus {
   outline-offset: 4px;
+}
+
+/* =============================================
+   Projects Carousel
+   ============================================= */
+.projects-carousel-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 40px;
+}
+
+.carousel-track-container {
+  overflow: hidden;
+  flex: 1;
+  border-radius: 12px;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 24px;
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+.carousel-card {
+  flex-shrink: 0;
+  width: calc((100% - 48px) / 3);
+  background: var(--white-color);
+  border-radius: 14px;
+  padding: 28px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
+}
+
+.carousel-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
+}
+
+.carousel-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.carousel-card-date {
+  font-size: 12px;
+  color: var(--gray-text-color);
+  margin: 0;
+}
+
+.carousel-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--main-text-color);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.carousel-card-desc {
+  font-size: 13.5px;
+  color: var(--gray-text-color);
+  line-height: 1.65;
+  margin: 0;
+  flex: 1;
+}
+
+.carousel-card-impact {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #16a34a;
+  background: #f0fdf4;
+  border-left: 3px solid #16a34a;
+  padding: 8px 12px;
+  border-radius: 0 6px 6px 0;
+  line-height: 1.5;
+}
+
+.carousel-card .tech-stack {
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+}
+
+.carousel-card .tech-tag {
+  font-size: 11px;
+  padding: 4px 10px;
+}
+
+.carousel-card-footer {
+  margin-top: auto;
+  padding-top: 4px;
+}
+
+.carousel-github-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--main-text-color);
+  background: transparent;
+  border: 1.5px solid var(--main-text-color);
+  border-radius: 6px;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.carousel-github-btn:hover {
+  background: var(--main-text-color);
+  color: #fff;
+}
+
+/* Nav arrow buttons */
+.carousel-btn {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.15);
+  background: var(--white-color);
+  color: var(--main-text-color);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 0;
+}
+
+.carousel-btn:hover {
+  background: var(--secondary-accent);
+  color: #fff;
+  border-color: var(--secondary-accent);
+  transform: scale(1.08);
+}
+
+/* Dot indicators */
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 28px;
+}
+
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s ease, transform 0.2s ease, width 0.2s ease;
+}
+
+.carousel-dot.active {
+  background: var(--secondary-accent);
+  width: 24px;
+  border-radius: 4px;
+  transform: none;
+}
+
+/* Dark mode overrides */
+body.dark-mode .carousel-card {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .carousel-card:hover {
+  box-shadow: 0 12px 32px rgba(59, 130, 246, 0.2);
+}
+
+body.dark-mode .carousel-card-title {
+  color: #f1f5f9;
+}
+
+body.dark-mode .carousel-card-date {
+  color: #94a3b8;
+}
+
+body.dark-mode .carousel-card-desc {
+  color: #94a3b8;
+}
+
+body.dark-mode .carousel-card-impact {
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
+  border-left-color: #4ade80;
+}
+
+body.dark-mode .carousel-btn {
+  background: #1e293b;
+  border-color: rgba(59, 130, 246, 0.35);
+  color: #f1f5f9;
+}
+
+body.dark-mode .carousel-btn:hover {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #fff;
+}
+
+body.dark-mode .carousel-dot {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode .carousel-dot.active {
+  background: #3b82f6;
+}
+
+body.dark-mode .carousel-github-btn {
+  color: #f1f5f9;
+  border-color: rgba(241, 245, 249, 0.4);
+}
+
+body.dark-mode .carousel-github-btn:hover {
+  background: #3b82f6;
+  color: #fff;
+  border-color: #3b82f6;
 }
 
 /* Responsive adjustments */

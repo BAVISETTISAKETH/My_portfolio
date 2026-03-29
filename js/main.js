@@ -1,7 +1,3 @@
-"use strict";
-import form from "./form.js";
-import skillbar from "./skillbar.js";
-
 // Throttle function for better scroll performance
 function throttle(func, wait) {
   let timeout;
@@ -39,6 +35,8 @@ document.addEventListener("DOMContentLoaded", () => {
   initDarkMode();
   initProgressBar();
   initProjectFilters();
+  initProjectCarousel();
+  initCursorGlow();
 
   const nav = document.querySelector("#nav");
   const navBtn = document.querySelector("#nav-btn");
@@ -121,6 +119,13 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+window.toggleReadMore = function(btn, id) {
+  const text = document.getElementById(id);
+  if (!text) return;
+  text.classList.toggle('expanded');
+  btn.textContent = text.classList.contains('expanded') ? 'Show less ↑' : 'Read more ↓';
+};
+
 // Global functions for inline onclick handlers
 window.toggleDetails = function(id) {
   const element = document.getElementById(id);
@@ -142,6 +147,48 @@ window.toggleProjectDetails = function(link) {
     projectDetails.classList.toggle('hidden');
   }
 };
+
+// Cursor Glow Orb
+function initCursorGlow() {
+  const glow = document.getElementById('cursor-glow');
+  if (!glow) return;
+
+  if (window.matchMedia('(hover: none)').matches) return;
+
+  const HALF = 170; // half of 340px
+  const LERP = 0.09;
+
+  let mouseX = 0, mouseY = 0;
+  let curX = 0, curY = 0;
+  let started = false;
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    if (!started) {
+      curX = mouseX;
+      curY = mouseY;
+      started = true;
+      glow.style.opacity = '1';
+    }
+  }, { passive: true });
+
+  document.addEventListener('mouseleave', () => {
+    glow.style.opacity = '0';
+  }, { passive: true });
+
+  document.addEventListener('mouseenter', () => {
+    if (started) glow.style.opacity = '1';
+  }, { passive: true });
+
+  (function loop() {
+    curX += (mouseX - curX) * LERP;
+    curY += (mouseY - curY) * LERP;
+    glow.style.left = (curX - HALF) + 'px';
+    glow.style.top  = (curY - HALF) + 'px';
+    requestAnimationFrame(loop);
+  })();
+}
 
 // Dark Mode Toggle
 function initDarkMode() {
@@ -193,6 +240,182 @@ function initProgressBar() {
   }, 16);
 
   window.addEventListener('scroll', updateProgressBar, { passive: true });
+}
+
+// Project Carousel — infinite loop (clone-based)
+function initProjectCarousel() {
+  const track = document.getElementById('projectsTrack');
+  const container = document.querySelector('.carousel-track-container');
+  const dotsWrap = document.getElementById('carouselDots');
+  const prevBtn = document.querySelector('.carousel-prev');
+  const nextBtn = document.querySelector('.carousel-next');
+
+  if (!track || !container || !dotsWrap || !prevBtn || !nextBtn) return;
+
+  // Capture the real cards once — never touch them after cloning
+  const originals = Array.from(track.querySelectorAll('.carousel-card'));
+  const total = originals.length;
+
+  let visible = 3;
+  let trackIdx = 0; // position inside the full track (clones + originals + clones)
+  let busy = false;
+  let timer;
+
+  // ── helpers ──────────────────────────────────────────────────────────────
+  function getVisible() {
+    if (window.innerWidth < 640) return 1;
+    if (window.innerWidth < 1024) return 2;
+    return 3;
+  }
+
+  function cardStep() {
+    // Read from the first card in the track (may be a clone)
+    const first = track.querySelector('.carousel-card');
+    return first ? first.offsetWidth + 24 : 0;
+  }
+
+  function realIndex() {
+    // Which original card is leftmost on screen
+    return ((trackIdx - visible) % total + total) % total;
+  }
+
+  // ── build track with clones ───────────────────────────────────────────────
+  function buildTrack() {
+    visible = getVisible();
+
+    // Remove any previous clones
+    track.querySelectorAll('.cc-clone').forEach(c => c.remove());
+
+    // Prepend: clones of the last `visible` originals
+    const pre = document.createDocumentFragment();
+    for (let i = total - visible; i < total; i++) {
+      const cl = originals[i].cloneNode(true);
+      cl.classList.add('cc-clone');
+      pre.appendChild(cl);
+    }
+    track.insertBefore(pre, track.firstChild);
+
+    // Append: clones of the first `visible` originals
+    const post = document.createDocumentFragment();
+    for (let i = 0; i < visible; i++) {
+      const cl = originals[i].cloneNode(true);
+      cl.classList.add('cc-clone');
+      post.appendChild(cl);
+    }
+    track.appendChild(post);
+
+    // Sit at real card 0 with no animation
+    trackIdx = visible;
+    setTransform(false);
+  }
+
+  // ── transform ─────────────────────────────────────────────────────────────
+  function setTransform(animate) {
+    track.style.transition = animate
+      ? 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+      : 'none';
+    track.style.transform = `translateX(-${trackIdx * cardStep()}px)`;
+  }
+
+  // ── infinite-loop correction after each slide ─────────────────────────────
+  track.addEventListener('transitionend', () => {
+    let jumped = false;
+    if (trackIdx >= visible + total) {   // slid into appended clones
+      trackIdx -= total;
+      jumped = true;
+    } else if (trackIdx < visible) {     // slid into prepended clones
+      trackIdx += total;
+      jumped = true;
+    }
+
+    if (jumped) {
+      // Apply new position without transition, then unlock
+      requestAnimationFrame(() => {
+        track.style.transition = 'none';
+        track.style.transform = `translateX(-${trackIdx * cardStep()}px)`;
+        requestAnimationFrame(() => { busy = false; });
+      });
+    } else {
+      busy = false;
+    }
+    updateDots();
+  });
+
+  // ── navigation ────────────────────────────────────────────────────────────
+  function move(delta) {
+    if (busy) return;
+    busy = true;
+    trackIdx += delta;
+    setTransform(true);
+    updateDots();
+  }
+
+  function next() { move(1); }
+  function prev() { move(-1); }
+
+  // ── dots ──────────────────────────────────────────────────────────────────
+  function buildDots() {
+    dotsWrap.innerHTML = '';
+    for (let i = 0; i < total; i++) {
+      const dot = document.createElement('button');
+      dot.className = 'carousel-dot';
+      dot.setAttribute('aria-label', 'Go to project ' + (i + 1));
+      dot.addEventListener('click', () => {
+        if (busy) return;
+        busy = true;
+        trackIdx = visible + i;
+        setTransform(true);
+        updateDots();
+        resetTimer();
+      });
+      dotsWrap.appendChild(dot);
+    }
+    updateDots();
+  }
+
+  function updateDots() {
+    dotsWrap.querySelectorAll('.carousel-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === realIndex());
+    });
+  }
+
+  // ── auto-play ─────────────────────────────────────────────────────────────
+  function startTimer() { timer = setInterval(next, 4000); }
+  function resetTimer() { clearInterval(timer); startTimer(); }
+
+  prevBtn.addEventListener('click', () => { prev(); resetTimer(); });
+  nextBtn.addEventListener('click', () => { next(); resetTimer(); });
+
+  container.addEventListener('mouseenter', () => clearInterval(timer));
+  container.addEventListener('mouseleave', startTimer);
+
+  // Touch swipe
+  let touchX = 0;
+  container.addEventListener('touchstart', e => {
+    touchX = e.touches[0].clientX;
+    clearInterval(timer);
+  }, { passive: true });
+  container.addEventListener('touchend', e => {
+    const diff = touchX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) { diff > 0 ? next() : prev(); }
+    startTimer();
+  }, { passive: true });
+
+  // Resize: rebuild clones so card widths are recalculated
+  window.addEventListener('resize', throttle(() => {
+    clearInterval(timer);
+    const prevReal = realIndex();
+    buildTrack();
+    trackIdx = visible + prevReal;
+    setTransform(false);
+    buildDots();
+    startTimer();
+  }, 200));
+
+  // ── init ──────────────────────────────────────────────────────────────────
+  buildTrack();
+  buildDots();
+  startTimer();
 }
 
 // Project Filtering

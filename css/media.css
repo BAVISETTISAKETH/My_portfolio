@@ -164,3 +164,39 @@
     flex: 1 1 100%;
   }
 }
+
+@media (max-width: 1024px) {
+  .recommendations-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .carousel-card {
+    width: calc((100% - 24px) / 2);
+  }
+}
+
+@media (max-width: 640px) {
+  .carousel-card {
+    width: 100%;
+  }
+
+  .carousel-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .recommendations-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rec-author {
+    flex-wrap: wrap;
+  }
+
+  .rec-linkedin-badge {
+    margin-top: 8px;
+  }
+}
