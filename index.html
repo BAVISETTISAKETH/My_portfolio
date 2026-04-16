@@ -29,6 +29,7 @@
     <!-- Critical CSS -->
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/media.css" />
+    <link rel="stylesheet" href="css/premium.css" />
 
     <!-- AOS CSS with media query to prevent render blocking -->
     <link
@@ -134,18 +135,28 @@
 
     <main id="main-content">
     <section id="home" class="hero section-light-blue">
+      <!-- Ambient blobs -->
+      <div class="hero-blob hero-blob-1" aria-hidden="true"></div>
+      <div class="hero-blob hero-blob-2" aria-hidden="true"></div>
+      <div class="hero-blob hero-blob-3" aria-hidden="true"></div>
+      <!-- Data particle canvas -->
+      <canvas id="hero-canvas" aria-hidden="true"></canvas>
+      <!-- Floating geometric shapes -->
+      <div class="floating-shapes" aria-hidden="true">
+        <div class="fshape fshape-1"></div>
+        <div class="fshape fshape-2"></div>
+        <div class="fshape fshape-3"></div>
+      </div>
+
       <div class="container container-lg">
-        <div
-          class="hero-row"
-          data-aos="fade-zoom-in"
-          data-aos-easing="ease-in-out"
-          data-aos-delay="500"
-          data-aos-duration="1000"
-        >
+        <div class="hero-row">
           <div class="hero-content">
-            <span class="hero-greeting"> Hello, I am</span>
+            <span class="hero-greeting">Hello, I am</span>
             <h1 class="hero-heading">Sai Saketh Bavisetti</h1>
-            <span class="hero-heading-subtitle">Transforming Data into Actionable Insights | MS in Data Science @ SFSU</span>
+            <div class="hero-heading-subtitle">
+              <span class="typewriter-text"></span><span class="typewriter-cursor" aria-hidden="true"></span>
+              <span class="hero-tagline">MS in Data Science @ SFSU</span>
+            </div>
             <div class="about-social-list">
               <div class="social-links-row">
                 <a href="https://www.linkedin.com/in/sai-saketh-bavisetti/" aria-label="LinkedIn Profile">
@@ -159,9 +170,9 @@
                 </a>
               </div>
             </div>
-            <div>
-              <a href="#projects" class="btn">My Portfolio</a>
-              <a href="#contact" class="btn btn-white">Contact Me</a>
+            <div class="hero-cta">
+              <a href="#projects" class="btn btn-magnetic">My Portfolio</a>
+              <a href="#contact" class="btn btn-white btn-magnetic">Contact Me</a>
             </div>
           </div>
           <div class="hero-img">
@@ -177,11 +188,7 @@
           <h2 class="title">About Me</h2>
         </div>
         <div class="about-row">
-          <div
-            class="about-content"
-            data-aos="fade-up"
-            data-aos-duration="1000"
-          >
+          <div class="about-content">
             <p class="about-descr">
               Hi, I’m Sai Saketh Bavisetti, a passionate data analyst specializing in AI and machine learning. With a strong academic background and practical experience in data-driven analysis, I aim to transform complex data sets into actionable insights. Outside of work, I enjoy exploring new technologies and contributing to open-source projects.
               <br /><br />Let’s connect and explore the possibilities together!
@@ -190,12 +197,7 @@
               <a href="img/social_icons/Resume_SaiSakethB_Analyst.pdf" class="btn btn-white">Download CV</a>
             </div>
           </div>
-          <div
-            class="about-skills"
-            data-aos="fade-up"
-            data-aos-duration="1000"
-            data-aos-delay="100"
-          >
+          <div class="about-skills">
             <div class="skill">
               <div class="skill-title">Data Analysis</div>
               <div class="skill-percent">95%</div>
@@ -1202,12 +1204,23 @@
       </a>
     </div>
 
-    <!-- Cursor glow orb -->
+    <!-- Cursor glow orb (replaced by premium cursor) -->
     <div id="cursor-glow" aria-hidden="true"></div>
+    <!-- Premium custom cursor -->
+    <div class="cursor-dot" aria-hidden="true"></div>
+    <div class="cursor-ring" aria-hidden="true"></div>
+    <!-- Film grain overlay -->
+    <div class="grain-overlay" aria-hidden="true"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js" integrity="sha512-A7AYk1fGKX6S2SsHywmPkrnzTZHrgiVT7GcQkLGDe2ev0aWb8zejytzS8wjo7PGEXKqJOrjQ4oORtnimIRZBtw==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+    <!-- GSAP + ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+    <!-- Lenis smooth scroll -->
+    <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js" defer></script>
     <script src="js/form.js" defer></script>
     <script src="js/skillbar.js" defer></script>
     <script src="js/main.js" defer></script>
+    <script src="js/premium-animations.js" defer></script>
   </body>
 </html>
