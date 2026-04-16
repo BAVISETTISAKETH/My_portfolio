@@ -2,21 +2,21 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap") layer(fonts);
 
 :root {
-  --primary-bg-color: #f7fbfd;
-  --primary-accent: #0c1618;
-  --secondary-accent: #6f1d1b;
+  --primary-bg-color: #f6f3ed;
+  --primary-accent: #313851;
+  --secondary-accent: #313851;
 
-  --main-text-color: #0c1618;
-  --supportive-text-color: #242d2f;
-  --gray-text-color: #565a5b;
+  --main-text-color: #313851;
+  --supportive-text-color: #4a5568;
+  --gray-text-color: #6b7a8d;
 
   --white-color: #fff;
-  --gray-color: #e9e8e8;
-  --gray-color-2: #c0c0c0;
-  --gray-color-3: #e6e6e6;
+  --gray-color: #c2cbd3;
+  --gray-color-2: #a8b3bc;
+  --gray-color-3: #dce2e8;
 
   --color-preloader-bg: var(--white-color);
-  --color-dots: #1a1a1a;
+  --color-dots: #313851;
 }
 
 /* Common styles */
@@ -81,7 +81,7 @@ body {
 }
 
 .btn:active {
-  background-color: #8b4a48;
+  background-color: #232a3d;
 }
 
 .btn-white {
@@ -203,7 +203,7 @@ h5 {
   height: 2px;
   bottom: 0;
   left: 0;
-  background-color: #6f1d1b; /* Change this to your desired color */
+  background-color: #313851; /* Change this to your desired color */
   transform-origin: bottom right;
   transition: transform 0.25s ease-out;
 }
@@ -834,7 +834,7 @@ h5 {
 
 /* Style for the Education section */
 .education {
-  background-color: #f7fbfd; /* Light blue background color */
+  background-color: #f6f3ed; /* Light blue background color */
   padding: 50px 0; /* Padding for top and bottom */
 }
 
@@ -947,7 +947,7 @@ body.dark-mode .org-logo-wrap {
 
 /* Style for the Projects section */
 .projects {
-  background-color: #f7fbfd; /* Light blue background color */
+  background-color: #f6f3ed; /* Light blue background color */
   padding: 50px 0; /* Padding for top and bottom */
 }
 
