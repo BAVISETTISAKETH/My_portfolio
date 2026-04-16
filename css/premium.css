@@ -1,0 +1,400 @@
+/* ================================================================
+   PREMIUM STYLES — Apple-style immersive portfolio
+   ================================================================ */
+
+/* ── Lenis smooth scroll ──────────────────────────────────────── */
+html.lenis,
+html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+html { scroll-behavior: auto; }
+
+/* ── Grain / film noise overlay ──────────────────────────────── */
+.grain-overlay {
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  z-index: 9997;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain-drift 9s steps(10) infinite;
+  will-change: transform;
+}
+@keyframes grain-drift {
+  0%  { transform: translate(0,    0   ); }
+  10% { transform: translate(-5%,  -10%); }
+  20% { transform: translate(-15%, 5%  ); }
+  30% { transform: translate(7%,   -25%); }
+  40% { transform: translate(-5%,  25% ); }
+  50% { transform: translate(-15%, 10% ); }
+  60% { transform: translate(15%,  0%  ); }
+  70% { transform: translate(0%,   15% ); }
+  80% { transform: translate(3%,   35% ); }
+  90% { transform: translate(-10%, 10% ); }
+}
+
+/* ── Custom cursor ───────────────────────────────────────────── */
+#cursor-glow { display: none !important; }
+
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0; left: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s ease;
+  will-change: transform;
+}
+.cursor-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--primary-accent);
+  transition: width 0.25s ease, height 0.25s ease, opacity 0.3s ease;
+}
+.cursor-ring {
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid var(--primary-accent);
+  opacity: 0.5;
+  transition: width 0.35s cubic-bezier(0.23,1,0.32,1),
+              height 0.35s cubic-bezier(0.23,1,0.32,1),
+              opacity 0.35s ease,
+              border-color 0.3s ease;
+}
+.cursor-dot.cursor-hover  { width: 11px; height: 11px; }
+.cursor-ring.cursor-hover {
+  width: 68px; height: 68px;
+  opacity: 0.18;
+  border-color: var(--secondary-accent);
+}
+@media (hover: none) {
+  .cursor-dot, .cursor-ring { display: none; }
+}
+
+/* ── Hero section ────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding-top: 200px;
+  padding-bottom: 80px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+#hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero .container { position: relative; z-index: 2; }
+
+/* Animated ambient blobs */
+.hero-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 1;
+  will-change: transform;
+}
+.hero-blob-1 {
+  width: 650px; height: 650px;
+  background: var(--secondary-accent);
+  top: -200px; right: -180px;
+  opacity: 0.13;
+  animation: blob-drift 14s ease-in-out infinite;
+}
+.hero-blob-2 {
+  width: 450px; height: 450px;
+  background: var(--primary-accent);
+  bottom: -120px; left: -120px;
+  opacity: 0.09;
+  animation: blob-drift 11s ease-in-out infinite reverse;
+}
+.hero-blob-3 {
+  width: 320px; height: 320px;
+  background: var(--secondary-accent);
+  top: 55%; left: 42%;
+  opacity: 0.06;
+  animation: blob-drift 16s ease-in-out infinite;
+  animation-delay: -5s;
+}
+@keyframes blob-drift {
+  0%, 100% { transform: translate(0,    0   ) scale(1);    }
+  33%       { transform: translate(35px, -50px) scale(1.07); }
+  66%       { transform: translate(-25px, 25px) scale(0.93); }
+}
+
+/* ── Hero typography ─────────────────────────────────────────── */
+.hero-greeting {
+  display: block;
+  font-size: clamp(0.8rem, 0.7rem + 0.5vw, 1rem);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.35em;
+  color: var(--secondary-accent);
+  margin-bottom: 12px;
+}
+.hero-heading {
+  font-size: clamp(3.5rem, 3rem + 2.5vw, 6rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+}
+.hero-heading-subtitle {
+  display: block;
+  font-size: clamp(1.3rem, 1.1rem + 0.8vw, 1.75rem);
+  font-weight: 400;
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+.typewriter-text {
+  color: var(--secondary-accent);
+  font-weight: 600;
+}
+.typewriter-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 1.1em;
+  background: var(--secondary-accent);
+  margin-left: 3px;
+  vertical-align: middle;
+  border-radius: 2px;
+  animation: tw-blink 0.9s step-end infinite;
+}
+@keyframes tw-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+.hero-tagline {
+  display: block;
+  font-size: clamp(0.85rem, 0.75rem + 0.4vw, 1rem);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  opacity: 0.6;
+  margin-top: 8px;
+}
+
+/* ── Hero initial states (GSAP animates these in) ───────────── */
+.hero-greeting,
+.hero-heading-subtitle,
+.about-social-list,
+.hero-cta { opacity: 0; }
+
+/* ── Magnetic button wrapper ─────────────────────────────────── */
+.btn-magnetic {
+  will-change: transform;
+}
+
+/* ── Floating geometric shapes ───────────────────────────────── */
+.floating-shapes {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.fshape {
+  position: absolute;
+  opacity: 0.05;
+  animation: fshape-drift 22s ease-in-out infinite;
+  will-change: transform;
+}
+.fshape-1 {
+  width: 100px; height: 100px;
+  border: 1.5px solid var(--primary-accent);
+  border-radius: 28%;
+  top: 12%; left: 6%;
+  animation-duration: 19s;
+}
+.fshape-2 {
+  width: 55px; height: 55px;
+  background: var(--secondary-accent);
+  border-radius: 50%;
+  top: 72%; right: 9%;
+  animation-duration: 26s;
+  animation-delay: -7s;
+}
+.fshape-3 {
+  width: 80px; height: 80px;
+  border: 1.5px solid var(--secondary-accent);
+  border-radius: 18%;
+  top: 42%; left: 88%;
+  animation-duration: 21s;
+  animation-delay: -13s;
+}
+@keyframes fshape-drift {
+  0%, 100% { transform: translate(0, 0) rotate(0deg);   }
+  25%       { transform: translate(14px, -18px) rotate(90deg);  }
+  50%       { transform: translate(-9px, 13px) rotate(180deg); }
+  75%       { transform: translate(18px, 4px) rotate(270deg);  }
+}
+
+/* ── Glassmorphism cards ─────────────────────────────────────── */
+.glass-card {
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  transition: transform 0.55s cubic-bezier(0.23,1,0.32,1),
+              box-shadow  0.45s ease,
+              border-color 0.3s ease;
+  will-change: transform;
+}
+/* Light mode glass */
+body:not(.dark-mode) .glass-card {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(49, 56, 81, 0.1);
+  box-shadow: 0 6px 30px rgba(49, 56, 81, 0.08);
+}
+body:not(.dark-mode) .glass-card:hover {
+  box-shadow: 0 20px 60px rgba(49, 56, 81, 0.14);
+  border-color: rgba(49, 56, 81, 0.18);
+}
+/* Dark mode glass */
+body.dark-mode .glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(0, 212, 255, 0.1);
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
+}
+body.dark-mode .glass-card:hover {
+  border-color: rgba(0, 212, 255, 0.28);
+  box-shadow: 0 20px 60px rgba(0, 212, 255, 0.1);
+}
+
+/* Card shine overlay for 3D tilt */
+.card-shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+  border-radius: inherit;
+  transition: background 0.1s;
+}
+
+/* ── Header — glassmorphism when sticky ─────────────────────── */
+.header-sticky {
+  background: rgba(246, 243, 237, 0.82) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border-bottom: 1px solid rgba(49, 56, 81, 0.08) !important;
+  box-shadow: 0 2px 20px rgba(49, 56, 81, 0.06) !important;
+}
+body.dark-mode .header-sticky {
+  background: rgba(2, 0, 36, 0.82) !important;
+  border-bottom-color: rgba(0, 212, 255, 0.1) !important;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ── Section spacing — Apple breathing room ─────────────────── */
+.about, .tools, .education, .experience,
+.featured-projects, .recommendations, .contact {
+  padding: 120px 0;
+}
+
+/* ── Section title style ─────────────────────────────────────── */
+.title {
+  font-size: clamp(2rem, 1.5rem + 2.5vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 60px;
+}
+.section-subtitle {
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.2rem);
+  opacity: 0.65;
+  margin-top: -48px;
+  margin-bottom: 60px;
+  text-align: center;
+}
+
+/* ── Progress bar — thinner, gradient ───────────────────────── */
+.progress-bar {
+  height: 2px;
+  background: linear-gradient(90deg, var(--secondary-accent), var(--primary-accent));
+  box-shadow: 0 0 8px rgba(var(--secondary-accent), 0.5);
+}
+
+/* ── Footer ─────────────────────────────────────────────────── */
+.footer {
+  padding: 48px 0;
+}
+
+/* ── Scroll-reveal initial state ─────────────────────────────── */
+.sr-init { opacity: 0; transform: translateY(40px); }
+
+/* ── Social icon hover lift ──────────────────────────────────── */
+.social-links-row a {
+  transition: transform 0.3s cubic-bezier(0.23,1,0.32,1), opacity 0.3s;
+  display: inline-block;
+}
+.social-links-row a:hover { transform: translateY(-4px); opacity: 0.8; }
+
+/* ── Carousel cards ─────────────────────────────────────────── */
+.carousel-card {
+  border-radius: 20px;
+  transition: transform 0.55s cubic-bezier(0.23,1,0.32,1),
+              box-shadow 0.45s ease;
+}
+
+/* ── Education & experience cards ───────────────────────────── */
+.education-item, .timeline-content {
+  border-radius: 20px;
+}
+
+/* ── Recommendation cards ────────────────────────────────────── */
+.recommendation-card {
+  border-radius: 20px;
+}
+
+/* ── Tool items hover ────────────────────────────────────────── */
+.tool-item {
+  transition: transform 0.35s cubic-bezier(0.23,1,0.32,1),
+              box-shadow 0.35s ease,
+              border-color 0.25s ease;
+}
+.tool-item:hover { transform: translateY(-6px) scale(1.06); }
+
+/* ── Button premium feel ─────────────────────────────────────── */
+.btn {
+  border-radius: 100px;
+  letter-spacing: 0.08em;
+  font-size: 13px;
+  height: 50px;
+  line-height: 50px;
+  padding: 0 32px;
+  transition: transform 0.3s cubic-bezier(0.23,1,0.32,1),
+              box-shadow 0.3s ease,
+              background-color 0.2s ease;
+}
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+.btn:active { transform: translateY(0); }
+
+/* ── Go-to-top button ────────────────────────────────────────── */
+.goToTop {
+  transition: transform 0.4s cubic-bezier(0.23,1,0.32,1), opacity 0.4s;
+}
+.goToTop:hover { transform: translateY(-4px); }
+
+/* ── Mobile tweaks ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero { padding-top: 140px; padding-bottom: 60px; }
+  .hero-blob-1 { width: 300px; height: 300px; opacity: 0.1; }
+  .hero-blob-2 { width: 220px; height: 220px; opacity: 0.07; }
+  .hero-blob-3 { display: none; }
+  .fshape      { display: none; }
+  .about, .tools, .education, .experience,
+  .featured-projects, .recommendations, .contact { padding: 80px 0; }
+  .title { margin-bottom: 40px; }
+}
