@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How Netflix Bet $100 Million on Data | Sai Saketh Bavisetti</title>
+  <meta name="description" content="A product analytics deep-dive into Netflix's data-driven decision to greenlight House of Cards — without filming a single pilot episode." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="How Netflix Bet $100 Million on Data" />
+  <meta property="og:description" content="A Product Analytics Case Study — how Netflix used behavioral data to greenlight House of Cards and change the entertainment industry forever." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://sai-saketh-bavisetti.netlify.app/blogs/netflix-house-of-cards.html" />
+  <meta property="og:image" content="https://sai-saketh-bavisetti.netlify.app/img/hero/hero.png" />
+  <meta property="og:site_name" content="Sai Saketh Bavisetti" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="How Netflix Bet $100 Million on Data" />
+  <meta name="twitter:description" content="A Product Analytics Case Study on Netflix's House of Cards data-driven decision." />
+  <meta name="twitter:image" content="https://sai-saketh-bavisetti.netlify.app/img/hero/hero.png" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Variables ─────────────────────────────────────── */
+    :root {
+      --bg:            #08081f;
+      --bg-card:       #0e0e30;
+      --bg-card-2:     #13133a;
+      --purple:        #7F77DD;
+      --purple-light:  #a59fea;
+      --purple-dim:    rgba(127,119,221,0.15);
+      --purple-border: rgba(127,119,221,0.25);
+      --text:          #eeeeff;
+      --text-sub:      #a0a8c8;
+      --text-muted:    #6b7299;
+      --teal:          #4BC8C0;
+      --blue:          #4B9FE1;
+      --green:         #4ade80;
+      --radius:        14px;
+      --shadow:        0 4px 30px rgba(0,0,0,0.45);
+    }
+
+    /* ─── Reset ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      line-height: 1.7;
+    }
+    a { color: var(--purple-light); text-decoration: none; }
+    a:hover { color: var(--purple); }
+    img { max-width: 100%; display: block; }
+
+    /* ─── Reading progress bar ──────────────────────────── */
+    #reading-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--purple), #a59fea);
+      z-index: 9999;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 12px rgba(127,119,221,0.7);
+    }
+
+    /* ─── Navigation ────────────────────────────────────── */
+    .blog-nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 32px;
+      background: rgba(8,8,31,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--purple-border);
+      gap: 16px;
+    }
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-sub);
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 0.2s;
+      white-space: nowrap;
+    }
+    .back-link:hover { color: var(--purple-light); }
+    .blog-nav-logo {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+    .btn-share {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--purple);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      padding: 9px 20px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      white-space: nowrap;
+    }
+    .btn-share:hover {
+      background: var(--purple-light);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    /* ─── Layout containers ─────────────────────────────── */
+    .article-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .wide-wrap {
+      max-width: 940px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ─── Hero ──────────────────────────────────────────── */
+    .hero-section {
+      padding: 72px 0 64px;
+      background: radial-gradient(ellipse at 60% 0%, rgba(127,119,221,0.18) 0%, transparent 65%),
+                  linear-gradient(180deg, #0d0d28 0%, var(--bg) 100%);
+      border-bottom: 1px solid var(--purple-border);
+    }
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .tag-pill {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--purple-dim);
+      border: 1px solid var(--purple-border);
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--purple-light);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .hero-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 16px;
+    }
+    .hero-title {
+      font-size: clamp(2.1rem, 4vw + 1rem, 3.6rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #fff 0%, var(--purple-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle {
+      font-size: clamp(1rem, 1.5vw + 0.5rem, 1.3rem);
+      color: var(--text-sub);
+      font-weight: 400;
+      margin-bottom: 24px;
+    }
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px 4px;
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 40px;
+    }
+    .meta-author { font-weight: 600; color: var(--text); }
+    .meta-dot { color: var(--text-muted); padding: 0 4px; }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .hero-stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--purple-border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .hero-stat-card:hover {
+      border-color: var(--purple);
+      transform: translateY(-3px);
+    }
+    .stat-value {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 700;
+      color: var(--purple);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-sub);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ─── Article sections ──────────────────────────────── */
+    .article-section {
+      padding: 64px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .article-section:last-of-type { border-bottom: none; }
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 12px;
+    }
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--purple);
+      border-radius: 2px;
+    }
+    .section-heading {
+      font-size: clamp(1.4rem, 2.5vw + 0.5rem, 2rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      color: var(--text);
+      line-height: 1.25;
+    }
+    .article-p {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--text-sub);
+      margin-bottom: 20px;
+    }
+    .article-p:last-child { margin-bottom: 0; }
+    .article-p strong { color: var(--text); font-weight: 600; }
+
+    /* ─── Signal list ───────────────────────────────────── */
+    .signal-list {
+      list-style: none;
+      margin: 28px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .signal-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      background: var(--bg-card);
+      border: 1px solid var(--purple-border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .signal-num {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      background: var(--purple-dim);
+      border: 1px solid var(--purple);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--purple);
+    }
+    .signal-text { font-size: 0.97rem; color: var(--text-sub); line-height: 1.7; }
+    .signal-text strong { color: var(--text); }
+
+    /* ─── Chart cards ───────────────────────────────────── */
+    .chart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--purple-border);
+      border-radius: 18px;
+      padding: 32px;
+      margin: 36px 0;
+      box-shadow: var(--shadow);
+    }
+    .chart-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .chart-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    .chart-container { width: 100%; }
+    .chart-h-350 { height: 350px; }
+    .chart-h-420 { height: 420px; }
+    .chart-h-480 { height: 480px; }
+
+    /* ─── Venn diagram ──────────────────────────────────── */
+    .venn-svg-wrap {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .venn-svg-wrap svg { width: 100%; height: auto; }
+    .venn-zone { cursor: pointer; }
+    .venn-zone-overlay {
+      transition: opacity 0.2s;
+      opacity: 0;
+    }
+    .venn-zone:hover .venn-zone-overlay { opacity: 1; }
+    #venn-tooltip {
+      position: fixed;
+      display: none;
+      z-index: 5000;
+      pointer-events: none;
+      background: #0f1040;
+      border: 1px solid rgba(127,119,221,0.5);
+      border-radius: 10px;
+      padding: 14px 18px;
+      max-width: 260px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    }
+    .vt-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--purple-light);
+      margin-bottom: 4px;
+    }
+    .vt-count {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .vt-detail {
+      font-size: 11.5px;
+      color: var(--text-sub);
+      line-height: 1.5;
+    }
+
+    /* ─── Key insight callout ───────────────────────────── */
+    .key-insight {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: linear-gradient(135deg, rgba(127,119,221,0.12), rgba(127,119,221,0.04));
+      border-left: 3px solid var(--purple);
+      border-radius: 0 12px 12px 0;
+      padding: 18px 20px;
+      margin: 28px 0;
+    }
+    .insight-icon {
+      font-size: 20px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .insight-text {
+      font-size: 0.93rem;
+      color: var(--text-sub);
+      line-height: 1.7;
+      font-style: italic;
+    }
+    .insight-text strong { color: var(--purple-light); font-style: normal; }
+
+    /* ─── Comparison table ──────────────────────────────── */
+    .comparison-table-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--purple-border);
+      border-radius: 18px;
+      overflow: hidden;
+      margin: 32px 0;
+    }
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .comparison-table th {
+      background: var(--bg-card-2);
+      padding: 14px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: left;
+    }
+    .comparison-table th:first-child { color: var(--text-muted); }
+    .comparison-table th:last-child { color: var(--purple); }
+    .comparison-table td {
+      padding: 14px 20px;
+      font-size: 14px;
+      color: var(--text-sub);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      line-height: 1.6;
+    }
+    .comparison-table td:first-child {
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      width: 28%;
+    }
+    .comparison-table td:nth-child(2) { color: var(--text-sub); }
+    .comparison-table td:nth-child(3) { color: var(--text); font-weight: 500; }
+    .comparison-table tr:hover td { background: rgba(127,119,221,0.05); }
+
+    /* ─── Result stat cards ─────────────────────────────── */
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin: 32px 0;
+    }
+    .result-card {
+      background: var(--bg-card);
+      border: 1px solid var(--purple-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .result-card:hover {
+      border-color: var(--purple);
+      transform: translateY(-3px);
+    }
+    .result-icon { font-size: 28px; margin-bottom: 10px; }
+    .result-metric {
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      font-weight: 700;
+      color: var(--purple-light);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .result-desc {
+      font-size: 13px;
+      color: var(--text-sub);
+      line-height: 1.5;
+    }
+
+    /* ─── PM takeaway grid ──────────────────────────────── */
+    .pm-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 32px;
+    }
+    .pm-card {
+      background: var(--bg-card);
+      border: 1px solid var(--purple-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .pm-card:hover {
+      border-color: var(--purple);
+      transform: translateY(-3px);
+    }
+    .pm-icon { font-size: 28px; margin-bottom: 12px; }
+    .pm-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .pm-body {
+      font-size: 13px;
+      color: var(--text-sub);
+      line-height: 1.7;
+    }
+
+    /* ─── Personal analysis ─────────────────────────────── */
+    .analysis-quote {
+      font-size: clamp(1.05rem, 1.5vw + 0.5rem, 1.25rem);
+      font-style: italic;
+      color: var(--purple-light);
+      border-left: 3px solid var(--purple);
+      padding-left: 20px;
+      margin: 28px 0;
+      line-height: 1.7;
+    }
+
+    /* ─── Footer ────────────────────────────────────────── */
+    .blog-footer {
+      background: var(--bg-card);
+      border-top: 1px solid var(--purple-border);
+      padding: 72px 0 48px;
+      text-align: center;
+    }
+    .footer-title {
+      font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .footer-sub {
+      font-size: 14px;
+      color: var(--text-sub);
+      margin-bottom: 32px;
+    }
+    .cta-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 48px;
+    }
+    .btn-cta-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--purple);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      padding: 13px 28px;
+      border-radius: 100px;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-cta-primary:hover {
+      background: var(--purple-light);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+    .btn-cta-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--purple-light);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      padding: 13px 28px;
+      border-radius: 100px;
+      border: 1.5px solid var(--purple-border);
+      transition: border-color 0.2s, color 0.2s, transform 0.15s;
+    }
+    .btn-cta-secondary:hover {
+      border-color: var(--purple);
+      color: var(--purple);
+      transform: translateY(-2px);
+    }
+    .next-teaser {
+      background: var(--bg-card-2);
+      border: 1px solid var(--purple-border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 32px;
+      display: inline-block;
+    }
+    .next-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 6px;
+    }
+    .next-title {
+      font-size: 14px;
+      color: var(--text-sub);
+    }
+    .footer-tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+    .footer-tag {
+      font-size: 12px;
+      color: var(--text-muted);
+      background: rgba(255,255,255,0.04);
+      border-radius: 100px;
+      padding: 4px 12px;
+      transition: color 0.2s;
+    }
+    .footer-tag:hover { color: var(--purple-light); }
+
+    /* ─── Responsive ────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .blog-nav { padding: 12px 16px; }
+      .blog-nav-logo { display: none; }
+      .article-wrap, .wide-wrap { padding: 0 16px; }
+      .hero-section { padding: 48px 0 40px; }
+      .hero-stats { grid-template-columns: repeat(3,1fr); gap: 10px; }
+      .hero-stat-card { padding: 14px 8px; }
+      .stat-value { font-size: 1.3rem; }
+      .article-section { padding: 48px 0; }
+      .chart-card { padding: 20px 14px; }
+      .chart-h-350 { height: 280px; }
+      .chart-h-420 { height: 340px; }
+      .chart-h-480 { height: 380px; }
+      .pm-grid { grid-template-columns: 1fr; }
+      .results-grid { grid-template-columns: 1fr; }
+      .comparison-table td:first-child { width: auto; }
+      .comparison-table { font-size: 13px; }
+      .cta-buttons { flex-direction: column; align-items: stretch; }
+      .btn-cta-primary, .btn-cta-secondary { justify-content: center; }
+    }
+    @media (max-width: 480px) {
+      .hero-stats { grid-template-columns: 1fr; }
+    }
+
+    /* ─── Annotation arrow SVG label ────────────────────── */
+    .recharts-annotation { font-family: 'Poppins', sans-serif; }
+  </style>
+</head>
+<body>
+
+<!-- Reading progress bar -->
+<div id="reading-progress"></div>
+
+<!-- Venn tooltip (portal) -->
+<div id="venn-tooltip" role="tooltip" aria-live="polite">
+  <div class="vt-title" id="vt-title"></div>
+  <div class="vt-count" id="vt-count"></div>
+  <div class="vt-detail" id="vt-detail"></div>
+</div>
+
+<!-- Navigation -->
+<nav class="blog-nav" aria-label="Blog navigation">
+  <a href="../index.html" class="back-link" aria-label="Back to portfolio">
+    ← Portfolio
+  </a>
+  <span class="blog-nav-logo">Sai Saketh Bavisetti</span>
+  <a href="#" class="btn-share" id="share-btn" aria-label="Share on LinkedIn">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    Share
+  </a>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     HERO
+══════════════════════════════════════════ -->
+<section class="hero-section">
+  <div class="article-wrap">
+    <div class="hero-tags">
+      <span class="tag-pill">Product Analytics</span>
+      <span class="tag-pill">Case Study</span>
+      <span class="tag-pill">Data Driven Decisions</span>
+    </div>
+    <p class="hero-eyebrow">Netflix · House of Cards · 2013</p>
+    <h1 class="hero-title">How Netflix Bet&nbsp;$100 Million on Data</h1>
+    <p class="hero-subtitle">A Product Analytics Case Study</p>
+    <div class="hero-meta">
+      <span class="meta-author">Sai Saketh Bavisetti</span>
+      <span class="meta-dot">·</span>
+      <span class="meta-date">May 2025</span>
+      <span class="meta-dot">·</span>
+      <span id="read-time">8 min read</span>
+    </div>
+    <div class="hero-stats" aria-label="Key statistics">
+      <div class="hero-stat-card">
+        <div class="stat-value">$100M</div>
+        <div class="stat-label">Investment</div>
+      </div>
+      <div class="hero-stat-card">
+        <div class="stat-value">0</div>
+        <div class="stat-label">Pilots Filmed</div>
+      </div>
+      <div class="hero-stat-card">
+        <div class="stat-value">10+</div>
+        <div class="stat-label">Trailer Versions</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     INTRODUCTION
+══════════════════════════════════════════ -->
+<section class="article-section" id="introduction">
+  <div class="article-wrap">
+    <div class="section-label">Introduction</div>
+    <h2 class="section-heading">The Bet That Rewrote Hollywood's Rulebook</h2>
+    <p class="article-p">
+      In 2012, Netflix was at an inflection point. Having successfully disrupted the DVD rental market and grown a loyal
+      streaming subscriber base of over 30 million users, the company faced a new existential challenge: could they produce
+      original content that audiences would <strong>actually watch</strong>? Traditional studios had a well-worn playbook —
+      commission a pilot, test it with focus groups, gather executive opinions, and greenlight based on a committee's gut
+      feelings. Netflix threw that playbook into the ocean.
+    </p>
+    <p class="article-p">
+      The data was quietly telling a different story. Netflix had been accumulating something no studio in Hollywood
+      possessed: granular behavioral data on tens of millions of subscribers. They knew not just <strong>what</strong>
+      people watched, but <em>how</em> they watched it — pause points, rewatch patterns, ratings behavior, search
+      queries, and the hidden connections between seemingly unrelated genres and stars. When the opportunity to adapt the
+      acclaimed British political drama "House of Cards" arose, Netflix didn't need focus groups. They had the algorithm.
+    </p>
+    <p class="article-p">
+      What followed was a $100 million commitment — two full seasons, ordered sight-unseen, without a single pilot
+      episode filmed. It wasn't a gamble. It was a calculated inference. And it changed the entertainment industry
+      forever. This case study unpacks exactly how Netflix used behavioral data to make one of the most consequential
+      product decisions in streaming history — and what every product manager should learn from it.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     THE DATA BEHIND THE DECISION
+══════════════════════════════════════════ -->
+<section class="article-section" id="data-signals">
+  <div class="wide-wrap">
+    <div class="section-label">The Data</div>
+    <h2 class="section-heading">The Three Signals Netflix Couldn't Ignore</h2>
+    <p class="article-p">
+      Netflix's data science team identified three distinct behavioral clusters within their subscriber base. Individually,
+      each signal was interesting. Together, their overlap was statistically extraordinary — a trifecta pointing at a single,
+      untapped appetite that the market had never served all at once.
+    </p>
+
+    <ul class="signal-list">
+      <li class="signal-item">
+        <div class="signal-num">1</div>
+        <p class="signal-text">
+          <strong>The BBC House of Cards Effect.</strong> The original 1990 British miniseries had a passionate, highly
+          engaged fanbase on Netflix. These viewers didn't just watch — they rewatched episodes, rated the show in the top
+          percentile for political drama engagement, and had completion rates far above the platform average. They weren't
+          casual viewers. They were advocates.
+        </p>
+      </li>
+      <li class="signal-item">
+        <div class="signal-num">2</div>
+        <p class="signal-text">
+          <strong>The Kevin Spacey Completion Signal.</strong> Films featuring Kevin Spacey consistently registered
+          30–40% above-average completion rates on Netflix. Users who started a Kevin Spacey film almost always
+          finished it — a remarkable behavioral signal in an era of infinite scroll. His charismatic, morally complex
+          characters clearly resonated deeply with a specific viewer profile.
+        </p>
+      </li>
+      <li class="signal-item">
+        <div class="signal-num">3</div>
+        <p class="signal-text">
+          <strong>The David Fincher Fanbase.</strong> Fincher's catalog — <em>Fight Club</em>, <em>The Social
+          Network</em>, <em>Se7en</em> — attracted a unique viewer profile on Netflix: highly engaged, completion-first,
+          with an appetite for dark, morally ambiguous, aesthetically precise storytelling. These weren't casual
+          audiences. They were the platform's most valuable power users.
+        </p>
+      </li>
+    </ul>
+
+    <!-- VISUALIZATION 1: VENN DIAGRAM -->
+    <div class="chart-card">
+      <h3 class="chart-title">The Audience Overlap That Started It All</h3>
+      <p class="chart-subtitle">Hover over each zone to explore audience size and behavioral details</p>
+      <div class="venn-svg-wrap" role="img" aria-label="Venn diagram showing audience overlap between BBC House of Cards fans, Kevin Spacey viewers, and David Fincher movie watchers">
+        <svg viewBox="0 0 600 420" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="glow-purple">
+              <feGaussianBlur stdDeviation="4" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <!-- Clip paths for individual circles -->
+            <clipPath id="clip-bbc">
+              <circle cx="215" cy="165" r="122"/>
+            </clipPath>
+            <clipPath id="clip-spacey">
+              <circle cx="385" cy="165" r="122"/>
+            </clipPath>
+            <clipPath id="clip-fincher">
+              <circle cx="300" cy="275" r="122"/>
+            </clipPath>
+          </defs>
+
+          <!-- Base filled circles -->
+          <circle cx="215" cy="165" r="122" fill="#7F77DD" fill-opacity="0.22" stroke="#7F77DD" stroke-width="1.5"/>
+          <circle cx="385" cy="165" r="122" fill="#4B9FE1" fill-opacity="0.22" stroke="#4B9FE1" stroke-width="1.5"/>
+          <circle cx="300" cy="275" r="122" fill="#4BC8C0" fill-opacity="0.22" stroke="#4BC8C0" stroke-width="1.5"/>
+
+          <!-- Intersection overlays (brighter) -->
+          <circle cx="385" cy="165" r="122" fill="#4B9FE1" fill-opacity="0.12" clip-path="url(#clip-bbc)"/>
+          <circle cx="300" cy="275" r="122" fill="#4BC8C0" fill-opacity="0.12" clip-path="url(#clip-bbc)"/>
+          <circle cx="300" cy="275" r="122" fill="#4BC8C0" fill-opacity="0.12" clip-path="url(#clip-spacey)"/>
+
+          <!-- Center triple-overlap highlight -->
+          <ellipse cx="300" cy="208" rx="52" ry="44" fill="#c0b4ff" fill-opacity="0.28" filter="url(#glow-purple)"/>
+          <ellipse cx="300" cy="208" rx="52" ry="44" fill="none" stroke="#c0b4ff" stroke-width="1.5" stroke-opacity="0.6"/>
+
+          <!-- ── ZONE LABELS ── -->
+          <!-- BBC Only -->
+          <text x="142" y="143" text-anchor="middle" fill="#d4d0ff" font-size="11.5" font-family="Poppins,sans-serif" font-weight="600">BBC House</text>
+          <text x="142" y="158" text-anchor="middle" fill="#d4d0ff" font-size="11.5" font-family="Poppins,sans-serif" font-weight="600">of Cards Fans</text>
+          <text x="142" y="180" text-anchor="middle" fill="#7F77DD" font-size="20" font-family="Poppins,sans-serif" font-weight="700">2.1M</text>
+
+          <!-- Kevin Spacey Only -->
+          <text x="458" y="143" text-anchor="middle" fill="#b8d9ff" font-size="11.5" font-family="Poppins,sans-serif" font-weight="600">Kevin Spacey</text>
+          <text x="458" y="158" text-anchor="middle" fill="#b8d9ff" font-size="11.5" font-family="Poppins,sans-serif" font-weight="600">Film Viewers</text>
+          <text x="458" y="180" text-anchor="middle" fill="#4B9FE1" font-size="20" font-family="Poppins,sans-serif" font-weight="700">5.3M</text>
+
+          <!-- Fincher Only -->
+          <text x="300" y="355" text-anchor="middle" fill="#b8f0ec" font-size="11.5" font-family="Poppins,sans-serif" font-weight="600">Fincher Movie</text>
+          <text x="300" y="370" text-anchor="middle" fill="#b8f0ec" font-size="11.5" font-family="Poppins,sans-serif" font-weight="600">Watchers</text>
+          <text x="300" y="343" text-anchor="middle" fill="#4BC8C0" font-size="20" font-family="Poppins,sans-serif" font-weight="700">3.8M</text>
+
+          <!-- BBC + Spacey overlap label (top center) -->
+          <text x="300" y="108" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="11" font-family="Poppins,sans-serif">1.2M</text>
+
+          <!-- BBC + Fincher overlap label (bottom-left) -->
+          <text x="200" y="272" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="11" font-family="Poppins,sans-serif">0.9M</text>
+
+          <!-- Spacey + Fincher overlap label (bottom-right) -->
+          <text x="400" y="272" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="11" font-family="Poppins,sans-serif">1.4M</text>
+
+          <!-- All-three center label -->
+          <text x="300" y="202" text-anchor="middle" fill="#fff" font-size="11" font-family="Poppins,sans-serif" font-weight="700">TARGET</text>
+          <text x="300" y="216" text-anchor="middle" fill="#ede8ff" font-size="9.5" font-family="Poppins,sans-serif">0.8M subscribers</text>
+          <text x="300" y="229" text-anchor="middle" fill="#c0b4ff" font-size="9.5" font-family="Poppins,sans-serif">High Confidence</text>
+
+          <!-- ── INTERACTIVE HOVER ZONES (transparent) ── -->
+          <circle cx="142" cy="160" r="58" fill="transparent" class="venn-zone"
+            data-title="BBC House of Cards Fans"
+            data-count="2.1M subscribers"
+            data-detail="Top-10% political drama engagement. High rewatch rates. Passionate, advocacy-driven fans of morally complex power narratives."
+          />
+          <circle cx="458" cy="160" r="58" fill="transparent" class="venn-zone"
+            data-title="Kevin Spacey Film Viewers"
+            data-count="5.3M subscribers"
+            data-detail="30–40% above-average completion rates on Spacey's filmography. Users who start a Spacey film almost always finish it — a rare signal."
+          />
+          <circle cx="300" cy="348" r="50" fill="transparent" class="venn-zone"
+            data-title="David Fincher Movie Watchers"
+            data-count="3.8M subscribers"
+            data-detail="Engagement-first viewers. Fight Club, Se7en, and The Social Network completers. Dark storytelling with auteur direction is their sweet spot."
+          />
+          <circle cx="300" cy="112" r="36" fill="transparent" class="venn-zone"
+            data-title="BBC Fans ∩ Kevin Spacey Viewers"
+            data-count="1.2M subscribers"
+            data-detail="Fans who love both political drama and charismatic villain archetypes — a powerful signal for character-driven political thrillers."
+          />
+          <circle cx="202" cy="265" r="34" fill="transparent" class="venn-zone"
+            data-title="BBC Fans ∩ Fincher Watchers"
+            data-count="0.9M subscribers"
+            data-detail="Viewers who crave both political tension and cinematic precision. A niche but extremely high-engagement audience segment."
+          />
+          <circle cx="398" cy="265" r="34" fill="transparent" class="venn-zone"
+            data-title="Spacey Viewers ∩ Fincher Watchers"
+            data-count="1.4M subscribers"
+            data-detail="Crime and power drama enthusiasts with auteur tastes. Likely to respond strongly to morally complex leads in visually precise productions."
+          />
+          <circle cx="300" cy="208" r="46" fill="transparent" class="venn-zone"
+            data-title="Target Audience — High Confidence"
+            data-count="0.8M subscribers"
+            data-detail="The sweet spot: fans of the BBC original, Kevin Spacey's charisma, AND Fincher's dark storytelling. Netflix's algorithm said this audience existed. House of Cards proved it."
+          />
+        </svg>
+      </div>
+    </div>
+
+    <div class="key-insight">
+      <span class="insight-icon">💡</span>
+      <p class="insight-text">
+        <strong>The key insight:</strong> 800,000 subscribers sat at the intersection of all three behavioral signals.
+        That's not a small niche — that's a statistically significant, passion-driven audience that no studio had
+        thought to build a show around. Netflix didn't greenlight House of Cards despite the data. They greenlit it
+        <em>because</em> of it.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     THE $100M DECISION — NO PILOT
+══════════════════════════════════════════ -->
+<section class="article-section" id="decision">
+  <div class="wide-wrap">
+    <div class="section-label">The Decision</div>
+    <h2 class="section-heading">Why Skipping the Pilot Was Revolutionary</h2>
+    <p class="article-p">
+      In the traditional TV industry, the pilot is sacrosanct. Studios spend millions filming a single test episode,
+      show it to focus groups, internal executives, and network partners — then wait months for notes, revisions, and
+      conditional greenlight decisions. The whole process can take 12–18 months before a single season gets approved.
+      It's theater masquerading as diligence.
+    </p>
+    <p class="article-p">
+      Netflix's data gave them something more valuable than any pilot screening: a forward model. They could predict,
+      with reasonable confidence, that the overlap audience existed, that they would binge-watch, and that the show
+      would retain subscribers. The pilot — a tool designed to <em>reduce uncertainty</em> — was already largely
+      obsolete. Netflix had 30 million behavioral data points doing the same job, only faster and more accurately.
+    </p>
+
+    <!-- Comparison Table -->
+    <div class="comparison-table-wrap">
+      <table class="comparison-table" aria-label="Traditional TV vs Netflix approach comparison">
+        <thead>
+          <tr>
+            <th>Criterion</th>
+            <th>Traditional Studio Way</th>
+            <th>Netflix's Data-Driven Way</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Validation method</td>
+            <td>Pilot episode + focus groups + executive gut</td>
+            <td>Behavioral data from 30M+ subscribers</td>
+          </tr>
+          <tr>
+            <td>Decision timeline</td>
+            <td>12–18 months to greenlight a season</td>
+            <td>Order placed in weeks based on data confidence</td>
+          </tr>
+          <tr>
+            <td>Commitment</td>
+            <td>One pilot, then maybe a season if numbers hold</td>
+            <td>Two full seasons ordered simultaneously ($100M)</td>
+          </tr>
+          <tr>
+            <td>Risk model</td>
+            <td>Intuition-hedged, committee-approved</td>
+            <td>Data-validated, high-confidence investment thesis</td>
+          </tr>
+          <tr>
+            <td>Marketing</td>
+            <td>One trailer, broad demographic targeting</td>
+            <td>10+ personalized trailers, behavioral segment targeting</td>
+          </tr>
+          <tr>
+            <td>Release strategy</td>
+            <td>Weekly episodic broadcast</td>
+            <td>Full season drop — designed for binge consumption</td>
+          </tr>
+          <tr>
+            <td>Success metric</td>
+            <td>Nielsen ratings, advertiser reach</td>
+            <td>Subscriber retention, completion rate, rewatch velocity</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Binge Velocity Chart -->
+    <div class="chart-card" style="margin-top: 40px;">
+      <h3 class="chart-title">Binge Velocity: How Viewers Consumed House of Cards vs. Traditional TV</h3>
+      <p class="chart-subtitle">% of subscribers who completed the season — Days after release</p>
+      <div class="chart-container chart-h-350" id="binge-chart"></div>
+    </div>
+
+    <div class="key-insight">
+      <span class="insight-icon">📊</span>
+      <p class="insight-text">
+        <strong>70% of subscribers who watched House of Cards completed the full season within 3 days</strong> —
+        a binge velocity that traditional TV had no equivalent metric for. This wasn't just a hit.
+        It was a validation that Netflix's full-season drop model was architecturally superior to weekly broadcast
+        for a certain class of narrative content.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     TRAILER STRATEGY
+══════════════════════════════════════════ -->
+<section class="article-section" id="trailers">
+  <div class="wide-wrap">
+    <div class="section-label">The Marketing</div>
+    <h2 class="section-heading">10 Trailers. One Show. Zero Wasted Impressions.</h2>
+    <p class="article-p">
+      Most studios release one trailer — a broad-appeal highlight reel trying to speak to everyone and resonating
+      deeply with no one. Netflix took a fundamentally different approach. Using the same behavioral data that informed
+      the greenlight decision, their team cut <strong>10 distinct trailer versions</strong>, each targeting a specific
+      audience segment based on their viewing history and behavioral fingerprint.
+    </p>
+    <p class="article-p">
+      Kevin Spacey fans saw a trailer that emphasized his commanding screen presence and the show's character complexity.
+      Political drama viewers saw footage that leaned into Washington power dynamics. Fans of Fincher's visual style
+      received an edit that showcased the cinematography and tonal precision. Each trailer was algorithmically matched
+      to subscriber profiles — no creative wasted on a disinterested audience, and no interested viewer left with a
+      trailer that didn't speak directly to their taste.
+    </p>
+
+    <!-- Trailer Bar Chart -->
+    <div class="chart-card">
+      <h3 class="chart-title">10 Trailers. Audience Engagement by Segment.</h3>
+      <p class="chart-subtitle">Estimated trailer engagement rate by behavioral audience segment</p>
+      <div class="chart-container chart-h-480" id="trailer-chart"></div>
+    </div>
+
+    <div class="key-insight">
+      <span class="insight-icon">🎯</span>
+      <p class="insight-text">
+        <strong>Personalization doesn't require 10 products — it requires 10 messages about the same product.</strong>
+        Netflix's trailer strategy demonstrated that behavioral segmentation isn't just a growth tactic. It's a
+        fundamental shift in how data-led teams think about the relationship between product and marketing.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     THE RESULTS
+══════════════════════════════════════════ -->
+<section class="article-section" id="results">
+  <div class="wide-wrap">
+    <div class="section-label">The Results</div>
+    <h2 class="section-heading">What Actually Happened After Launch</h2>
+    <p class="article-p">
+      House of Cards premiered on February 1, 2013. Within days, it was the most-watched piece of content on Netflix.
+      Within weeks, it had demonstrated something the industry hadn't believed possible: that a streaming platform
+      without broadcast distribution could produce a prestige drama that could compete — and win — against legacy studios
+      on quality, audience engagement, and cultural conversation. The $100M returned in full before Season 2 even went
+      into production.
+    </p>
+
+    <div class="results-grid">
+      <div class="result-card">
+        <div class="result-icon">🏆</div>
+        <div class="result-metric">Most Watched Show at Launch</div>
+        <div class="result-desc">House of Cards became the most-streamed title on Netflix in the first week of release in every market it was available.</div>
+      </div>
+      <div class="result-card">
+        <div class="result-icon">📈</div>
+        <div class="result-metric">Subscriber Retention Driver</div>
+        <div class="result-desc">A measurable segment of subscribers cited House of Cards as the primary reason they kept their Netflix subscription in the month of release.</div>
+      </div>
+      <div class="result-card">
+        <div class="result-icon">🎬</div>
+        <div class="result-metric">Netflix Originals Became a Business Unit</div>
+        <div class="result-desc">The success directly triggered the creation of Netflix's Originals division as a core strategic pillar — not an experiment, but a permanent competitive moat.</div>
+      </div>
+      <div class="result-card">
+        <div class="result-icon">💰</div>
+        <div class="result-metric">$100M Investment Returned in Season 1</div>
+        <div class="result-desc">Through subscriber retention uplift and reduced churn attributed to the show, the investment economics closed before Season 2 began production.</div>
+      </div>
+    </div>
+
+    <!-- Impact Area Chart -->
+    <div class="chart-card" style="margin-top: 40px;">
+      <h3 class="chart-title">The Ripple Effect: Netflix Originals Investment 2012–2024</h3>
+      <p class="chart-subtitle">Annual content investment in Netflix Original programming (USD billions)</p>
+      <div class="chart-container chart-h-350" id="impact-chart"></div>
+    </div>
+
+    <div class="key-insight">
+      <span class="insight-icon">🌊</span>
+      <p class="insight-text">
+        <strong>From $100M to $17 billion in twelve years.</strong> The House of Cards bet didn't just produce a hit —
+        it created the template for an entirely new content business model. Every Netflix Original you've watched since
+        2013 traces its lineage back to that single data-driven greenlight decision.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     PM TAKEAWAYS
+══════════════════════════════════════════ -->
+<section class="article-section" id="takeaways">
+  <div class="article-wrap">
+    <div class="section-label">For Product Managers</div>
+    <h2 class="section-heading">What Every PM Should Learn From This</h2>
+    <p class="article-p">
+      The Netflix House of Cards case is taught in business schools and product strategy circles for a reason. It
+      is not merely a story about a successful show — it's a masterclass in how behavioral data changes the entire
+      epistemology of product decisions.
+    </p>
+
+    <div class="pm-grid">
+      <div class="pm-card">
+        <div class="pm-icon">🧠</div>
+        <div class="pm-title">Behavioral Data > Stated Preferences</div>
+        <p class="pm-body">
+          What users <em>do</em> is always more reliable than what they <em>say</em> they want.
+          Focus groups told studios that audiences wanted feel-good content. Completion rates told Netflix
+          they wanted morally complex power dramas. Trust the behavior, not the survey.
+        </p>
+      </div>
+      <div class="pm-card">
+        <div class="pm-icon">✅</div>
+        <div class="pm-title">Validate Before You Invest — at Scale</div>
+        <p class="pm-body">
+          Netflix validated the audience <em>before</em> they built the product — using proxy signals from existing
+          behavior. The pilot was a validation mechanism. Data made it obsolete. Ask yourself: what proxies in
+          your existing data can replace the pilot experiment?
+        </p>
+      </div>
+      <div class="pm-card">
+        <div class="pm-icon">🎯</div>
+        <div class="pm-title">Personalization Scales When Data Leads</div>
+        <p class="pm-body">
+          10 trailer versions sounds expensive. It isn't — when each one converts at 3× the rate of a generic
+          alternative. Personalization at scale is only possible when behavioral segmentation is built into
+          the product process from the beginning, not bolted on at the end.
+        </p>
+      </div>
+      <div class="pm-card">
+        <div class="pm-icon">🛡️</div>
+        <div class="pm-title">Data Makes Decisions Defensible</div>
+        <p class="pm-body">
+          Spending $100M without a pilot is a terrifying pitch in any boardroom. Netflix's data made it a
+          rational argument, not a leap of faith. Good data doesn't just improve decisions — it creates the
+          psychological and institutional safety to make bold ones.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     MY ANALYSIS
+══════════════════════════════════════════ -->
+<section class="article-section" id="analysis">
+  <div class="article-wrap">
+    <div class="section-label">My Take</div>
+    <h2 class="section-heading">What Mesmerized Me About This Case Study</h2>
+    <p class="article-p">
+      I came across this case study during a deep-dive into product analytics frameworks, and what struck me wasn't
+      the scale of the bet — it was the <strong>specificity of the signal</strong>. Netflix didn't just look at
+      aggregate popularity scores. They found a behavioral intersection so precise that it essentially described
+      a single person: someone who had watched the BBC original, loved Kevin Spacey's performance in <em>American
+      Beauty</em>, and stayed up until 2 AM to finish <em>The Social Network</em>.
+    </p>
+
+    <blockquote class="analysis-quote">
+      "The most powerful insight in data isn't the one that tells you what happened — it's the one that tells you
+      what <em>should</em> happen next, and with enough confidence to act on it immediately."
+    </blockquote>
+
+    <p class="article-p">
+      What I find genuinely remarkable is the parallel between Netflix's "binge velocity" signal and insights
+      I encountered when studying onboarding flows for MindfulMinutes — a wellness app I analyzed as part of a
+      product analytics project. The core finding was similar: users who completed a key action within the first
+      24 hours (in Netflix's case, watched more than 2 episodes; in MindfulMinutes, completed a full meditation
+      session) had dramatically higher 30-day retention. The <em>speed</em> of early engagement was predictive of
+      long-term retention in both cases. Netflix had discovered this at scale. It's a universal behavioral truth
+      that applies across product categories.
+    </p>
+
+    <p class="article-p">
+      The trailer personalization piece is the other thing that genuinely changed how I think about marketing
+      strategy. The instinct is to create the single "best" message. Netflix's instinct was to create the
+      most <strong>relevant</strong> message for each distinct behavioral cluster. That's a fundamentally different
+      philosophy — and it's one that only becomes possible when your data infrastructure is mature enough to
+      segment audiences by behavior rather than by self-reported demographics. It's an idea I think about a lot
+      when evaluating product-market fit strategies for early-stage products.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     FOOTER / CTA
+══════════════════════════════════════════ -->
+<footer class="blog-footer" id="cta">
+  <div class="article-wrap">
+    <h2 class="footer-title">Enjoyed this case study?</h2>
+    <p class="footer-sub">Let's connect and talk product, data, and strategy.</p>
+
+    <div class="cta-buttons">
+      <a href="https://www.linkedin.com/in/sai-saketh-bavisetti/" target="_blank" rel="noopener noreferrer" class="btn-cta-primary">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        Connect on LinkedIn
+      </a>
+      <a href="https://sai-saketh-bavisetti.netlify.app" target="_blank" rel="noopener noreferrer" class="btn-cta-secondary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        View My Portfolio
+      </a>
+    </div>
+
+    <div class="next-teaser">
+      <p class="next-label">Coming Monday</p>
+      <p class="next-title">How Spotify used data to build Discover Weekly — and why it changed music discovery forever</p>
+    </div>
+
+    <div class="footer-tags">
+      <span class="footer-tag">#ProductAnalytics</span>
+      <span class="footer-tag">#CaseStudy</span>
+      <span class="footer-tag">#Netflix</span>
+      <span class="footer-tag">#DataDriven</span>
+      <span class="footer-tag">#LearningInPublic</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════════
+     REACT + RECHARTS CDN
+══════════════════════════════════════════ -->
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js" crossorigin></script>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── Aliases ─────────────────────────────── */
+  const h = React.createElement;
+  const {
+    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+    ResponsiveContainer, AreaChart, Area, BarChart, Bar, ReferenceLine,
+    Cell, LabelList
+  } = Recharts;
+
+  /* ── Shared chart style constants ─────────── */
+  const GRID_STYLE  = { stroke: 'rgba(255,255,255,0.06)', strokeDasharray: '3 3' };
+  const AXIS_TICK   = { fill: '#8a93b8', fontSize: 11, fontFamily: 'Poppins,sans-serif' };
+  const AXIS_LINE   = { stroke: 'rgba(255,255,255,0.1)' };
+  const TOOLTIP_BOX = {
+    background: '#0f1040',
+    border: '1px solid rgba(127,119,221,0.45)',
+    borderRadius: '10px',
+    padding: '12px 16px',
+    color: '#eeeeff',
+    fontSize: '13px',
+    fontFamily: 'Poppins,sans-serif',
+    boxShadow: '0 8px 30px rgba(0,0,0,0.5)'
+  };
+
+  /* ════════════════════════════════════════════
+     CHART 1 — BINGE VELOCITY LINE CHART
+  ════════════════════════════════════════════ */
+  const bingeData = [
+    { day: 0,  hoc: 0,  traditional: 0,  avgNetflix: 0  },
+    { day: 1,  hoc: 47, traditional: 5,  avgNetflix: 21 },
+    { day: 2,  hoc: 63, traditional: 8,  avgNetflix: 33 },
+    { day: 3,  hoc: 70, traditional: 11, avgNetflix: 41 },
+    { day: 5,  hoc: 78, traditional: 16, avgNetflix: 53 },
+    { day: 7,  hoc: 84, traditional: 21, avgNetflix: 62 },
+    { day: 10, hoc: 89, traditional: 27, avgNetflix: 70 },
+    { day: 14, hoc: 92, traditional: 34, avgNetflix: 77 },
+    { day: 20, hoc: 95, traditional: 45, avgNetflix: 83 },
+    { day: 25, hoc: 96, traditional: 53, avgNetflix: 87 },
+    { day: 30, hoc: 97, traditional: 61, avgNetflix: 90 },
+  ];
+
+  function BingeTooltip({ active, payload, label }) {
+    if (!active || !payload || !payload.length) return null;
+    return h('div', { style: TOOLTIP_BOX },
+      h('p', { style: { fontWeight: 600, color: '#a59fea', marginBottom: 8 } }, `Day ${label}`),
+      ...payload.map(p =>
+        h('p', { key: p.dataKey, style: { color: p.color, margin: '3px 0' } },
+          `${p.name}: ${p.value}%`
+        )
+      )
+    );
+  }
+
+  function BingeChart() {
+    return h(ResponsiveContainer, { width: '100%', height: '100%' },
+      h(LineChart, { data: bingeData, margin: { top: 24, right: 24, left: 8, bottom: 36 } },
+        h(CartesianGrid, GRID_STYLE),
+        h(XAxis, {
+          dataKey: 'day',
+          tick: AXIS_TICK,
+          axisLine: AXIS_LINE,
+          tickLine: false,
+          label: { value: 'Days After Release', position: 'insideBottom', offset: -22, fill: '#8a93b8', fontSize: 12, fontFamily: 'Poppins,sans-serif' }
+        }),
+        h(YAxis, {
+          tick: AXIS_TICK,
+          axisLine: false,
+          tickLine: false,
+          tickFormatter: v => `${v}%`,
+          label: { value: '% Completed Season', angle: -90, position: 'insideLeft', offset: 14, fill: '#8a93b8', fontSize: 11, fontFamily: 'Poppins,sans-serif' },
+          domain: [0, 100]
+        }),
+        h(Tooltip, { content: h(BingeTooltip) }),
+        h(Legend, {
+          wrapperStyle: { color: '#8a93b8', fontSize: 12, fontFamily: 'Poppins,sans-serif', paddingTop: 12 },
+          iconType: 'plainline'
+        }),
+        h(ReferenceLine, {
+          x: 3,
+          stroke: '#7F77DD',
+          strokeDasharray: '4 3',
+          strokeWidth: 1.5,
+          label: { value: '70% by Day 3 →', position: 'insideTopRight', fill: '#a59fea', fontSize: 10.5, fontFamily: 'Poppins,sans-serif', offset: 4 }
+        }),
+        h(Line, {
+          type: 'monotone', dataKey: 'hoc', name: 'House of Cards',
+          stroke: '#7F77DD', strokeWidth: 2.8,
+          dot: { fill: '#7F77DD', r: 3.5, strokeWidth: 0 },
+          activeDot: { r: 6, fill: '#7F77DD', strokeWidth: 2, stroke: '#fff' }
+        }),
+        h(Line, {
+          type: 'monotone', dataKey: 'avgNetflix', name: 'Avg Netflix Show',
+          stroke: '#4B9FE1', strokeWidth: 2,
+          strokeDasharray: '5 3',
+          dot: { fill: '#4B9FE1', r: 2.5, strokeWidth: 0 },
+          activeDot: { r: 5, fill: '#4B9FE1' }
+        }),
+        h(Line, {
+          type: 'monotone', dataKey: 'traditional', name: 'Traditional Weekly TV',
+          stroke: '#4a5568', strokeWidth: 2,
+          strokeDasharray: '7 4',
+          dot: { fill: '#4a5568', r: 2.5, strokeWidth: 0 },
+          activeDot: { r: 5, fill: '#6b7480' }
+        })
+      )
+    );
+  }
+
+  /* ════════════════════════════════════════════
+     CHART 2 — TRAILER ENGAGEMENT HORIZONTAL BAR
+  ════════════════════════════════════════════ */
+  const trailerData = [
+    { segment: 'Documentary Style',     engagement: 22, desc: 'Docudramas and narrative documentary fans attracted by the show\'s political realism.' },
+    { segment: 'International Drama',   engagement: 25, desc: 'Foreign language drama enthusiasts familiar with European political storytelling.' },
+    { segment: 'Film Buff / Cinephile', engagement: 28, desc: 'Art house and independent film viewers drawn to Fincher\'s visual language.' },
+    { segment: 'Award Show Watchers',   engagement: 29, desc: 'Emmy and Golden Globe ceremony viewers with an eye for prestige content.' },
+    { segment: 'Thriller Fans',         engagement: 31, desc: 'Suspense and psychological drama viewers who respond to moral complexity.' },
+    { segment: 'Strong Female Lead',    engagement: 35, desc: 'Viewers with high engagement on shows featuring complex, powerful female characters.' },
+    { segment: 'David Fincher Fans',    engagement: 36, desc: 'The Social Network and Fight Club completers. Auteur-driven storytelling is their anchor.' },
+    { segment: 'Kevin Spacey Fans',     engagement: 38, desc: 'High completion rates on Spacey\'s filmography — a uniquely powerful engagement signal.' },
+    { segment: 'Political Drama Fans',  engagement: 42, desc: 'West Wing, Veep, and House viewers. Washington power dynamics are their primary draw.' },
+    { segment: 'Binge Watchers',        engagement: 45, desc: 'Subscribers who completed 3+ shows in a month. Full-season drops were built for them.' },
+  ].reverse();
+
+  function getBarColor(value) {
+    const min = 22, max = 45;
+    const t = (value - min) / (max - min);
+    const r = Math.round(74  + t * (127 - 74));
+    const g = Math.round(85  + t * (119 - 85));
+    const b = Math.round(104 + t * (221 - 104));
+    return `rgb(${r},${g},${b})`;
+  }
+
+  function TrailerTooltip({ active, payload }) {
+    if (!active || !payload || !payload.length) return null;
+    const d = payload[0].payload;
+    return h('div', { style: { ...TOOLTIP_BOX, maxWidth: 260 } },
+      h('p', { style: { fontWeight: 700, color: '#a59fea', marginBottom: 4, fontSize: 12 } }, d.segment),
+      h('p', { style: { color: '#7F77DD', fontWeight: 700, fontSize: 18, marginBottom: 8 } }, `${d.engagement}%`),
+      h('p', { style: { color: '#a0a8c8', fontSize: 11.5, lineHeight: 1.5 } }, d.desc)
+    );
+  }
+
+  function TrailerChart() {
+    return h(ResponsiveContainer, { width: '100%', height: '100%' },
+      h(BarChart, {
+        layout: 'vertical',
+        data: trailerData,
+        margin: { top: 8, right: 48, left: 8, bottom: 8 }
+      },
+        h(CartesianGrid, { ...GRID_STYLE, horizontal: false }),
+        h(XAxis, {
+          type: 'number',
+          domain: [0, 50],
+          tick: AXIS_TICK,
+          axisLine: AXIS_LINE,
+          tickLine: false,
+          tickFormatter: v => `${v}%`
+        }),
+        h(YAxis, {
+          type: 'category',
+          dataKey: 'segment',
+          tick: { ...AXIS_TICK, fontSize: 10.5 },
+          axisLine: false,
+          tickLine: false,
+          width: 164
+        }),
+        h(Tooltip, { content: h(TrailerTooltip), cursor: { fill: 'rgba(127,119,221,0.07)' } }),
+        h(Bar, {
+          dataKey: 'engagement',
+          name: 'Engagement Rate',
+          radius: [0, 6, 6, 0],
+          maxBarSize: 28
+        },
+          ...trailerData.map((entry, i) =>
+            h(Cell, { key: i, fill: getBarColor(entry.engagement) })
+          ),
+          h(LabelList, {
+            dataKey: 'engagement',
+            position: 'right',
+            formatter: v => `${v}%`,
+            style: { fill: '#a59fea', fontSize: 11, fontFamily: 'Poppins,sans-serif', fontWeight: 600 }
+          })
+        )
+      )
+    );
+  }
+
+  /* ════════════════════════════════════════════
+     CHART 3 — IMPACT AREA CHART
+  ════════════════════════════════════════════ */
+  const impactData = [
+    { year: '2012', investment: 0.1  },
+    { year: '2013', investment: 0.2  },
+    { year: '2014', investment: 0.3  },
+    { year: '2015', investment: 0.5  },
+    { year: '2016', investment: 1.0  },
+    { year: '2017', investment: 2.5  },
+    { year: '2018', investment: 8.0  },
+    { year: '2019', investment: 15.0 },
+    { year: '2020', investment: 17.0 },
+    { year: '2021', investment: 17.3 },
+    { year: '2022', investment: 17.0 },
+    { year: '2023', investment: 13.0 },
+    { year: '2024', investment: 17.0 },
+  ];
+
+  function ImpactTooltip({ active, payload, label }) {
+    if (!active || !payload || !payload.length) return null;
+    return h('div', { style: TOOLTIP_BOX },
+      h('p', { style: { fontWeight: 600, color: '#a59fea', marginBottom: 6 } }, label),
+      h('p', { style: { color: '#7F77DD', fontWeight: 700, fontSize: 17 } },
+        `$${payload[0].value}B`
+      ),
+      h('p', { style: { color: '#6b7299', fontSize: 11, marginTop: 4 } }, 'Netflix Original content investment')
+    );
+  }
+
+  function ImpactChart() {
+    return h(ResponsiveContainer, { width: '100%', height: '100%' },
+      h(AreaChart, { data: impactData, margin: { top: 28, right: 24, left: 8, bottom: 36 } },
+        h('defs', null,
+          h('linearGradient', { id: 'areaGrad', x1: '0', y1: '0', x2: '0', y2: '1' },
+            h('stop', { offset: '0%',   stopColor: '#7F77DD', stopOpacity: 0.45 }),
+            h('stop', { offset: '100%', stopColor: '#7F77DD', stopOpacity: 0.02 })
+          )
+        ),
+        h(CartesianGrid, GRID_STYLE),
+        h(XAxis, {
+          dataKey: 'year',
+          tick: AXIS_TICK,
+          axisLine: AXIS_LINE,
+          tickLine: false,
+          label: { value: 'Year', position: 'insideBottom', offset: -22, fill: '#8a93b8', fontSize: 12, fontFamily: 'Poppins,sans-serif' }
+        }),
+        h(YAxis, {
+          tick: AXIS_TICK,
+          axisLine: false,
+          tickLine: false,
+          tickFormatter: v => `$${v}B`,
+          label: { value: 'Investment (USD Billions)', angle: -90, position: 'insideLeft', offset: 20, fill: '#8a93b8', fontSize: 11, fontFamily: 'Poppins,sans-serif' }
+        }),
+        h(Tooltip, { content: h(ImpactTooltip) }),
+        h(ReferenceLine, {
+          x: '2012',
+          stroke: '#7F77DD',
+          strokeDasharray: '4 3',
+          strokeWidth: 1.5,
+          label: {
+            value: 'House of Cards greenlit →',
+            position: 'insideTopRight',
+            fill: '#a59fea',
+            fontSize: 10.5,
+            fontFamily: 'Poppins,sans-serif',
+            offset: 4
+          }
+        }),
+        h(Area, {
+          type: 'monotone',
+          dataKey: 'investment',
+          name: 'Originals Investment',
+          stroke: '#7F77DD',
+          strokeWidth: 2.5,
+          fill: 'url(#areaGrad)',
+          dot: { fill: '#fff', stroke: '#7F77DD', strokeWidth: 2, r: 4 },
+          activeDot: { r: 7, fill: '#7F77DD', stroke: '#fff', strokeWidth: 2 }
+        })
+      )
+    );
+  }
+
+  /* ── Mount all charts ──────────────────────── */
+  window.addEventListener('load', function () {
+    const mounts = [
+      { id: 'binge-chart',   component: BingeChart   },
+      { id: 'trailer-chart', component: TrailerChart  },
+      { id: 'impact-chart',  component: ImpactChart   },
+    ];
+    mounts.forEach(function ({ id, component }) {
+      const el = document.getElementById(id);
+      if (el) ReactDOM.createRoot(el).render(h(component));
+    });
+  });
+
+  /* ════════════════════════════════════════════
+     VENN DIAGRAM INTERACTION
+  ════════════════════════════════════════════ */
+  document.addEventListener('DOMContentLoaded', function () {
+    const tooltip   = document.getElementById('venn-tooltip');
+    const ttTitle   = document.getElementById('vt-title');
+    const ttCount   = document.getElementById('vt-count');
+    const ttDetail  = document.getElementById('vt-detail');
+    const zones     = document.querySelectorAll('.venn-zone');
+
+    zones.forEach(function (zone) {
+      zone.addEventListener('mouseenter', function (e) {
+        ttTitle.textContent  = zone.dataset.title;
+        ttCount.textContent  = zone.dataset.count;
+        ttDetail.textContent = zone.dataset.detail;
+        tooltip.style.display = 'block';
+        positionTooltip(e);
+      });
+      zone.addEventListener('mousemove', positionTooltip);
+      zone.addEventListener('mouseleave', function () {
+        tooltip.style.display = 'none';
+      });
+    });
+
+    function positionTooltip(e) {
+      const tw = tooltip.offsetWidth  || 240;
+      const th = tooltip.offsetHeight || 100;
+      const vw = window.innerWidth;
+      let x = e.clientX + 14;
+      let y = e.clientY - th / 2;
+      if (x + tw > vw - 8) x = e.clientX - tw - 14;
+      if (y < 8) y = 8;
+      tooltip.style.left = x + 'px';
+      tooltip.style.top  = (y + window.scrollY) + 'px';
+    }
+
+    /* ── Reading progress bar ─────────────────── */
+    const bar = document.getElementById('reading-progress');
+    function updateProgress() {
+      const scrollTop    = window.scrollY || document.documentElement.scrollTop;
+      const docHeight    = document.documentElement.scrollHeight - window.innerHeight;
+      const pct          = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      bar.style.width    = Math.min(pct, 100) + '%';
+    }
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+
+    /* ── Estimated read time ─────────────────── */
+    const bodyText  = document.body.innerText || '';
+    const wordCount = bodyText.trim().split(/\s+/).length;
+    const minutes   = Math.max(1, Math.round(wordCount / 200));
+    const rtEl      = document.getElementById('read-time');
+    if (rtEl) rtEl.textContent = `${minutes} min read`;
+
+    /* ── LinkedIn share button ───────────────── */
+    const shareBtn = document.getElementById('share-btn');
+    if (shareBtn) {
+      shareBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        const url = encodeURIComponent(window.location.href);
+        window.open(
+          `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
+          '_blank',
+          'width=600,height=520,noopener,noreferrer'
+        );
+      });
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
