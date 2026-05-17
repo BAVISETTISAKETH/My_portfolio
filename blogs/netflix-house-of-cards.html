@@ -767,7 +767,7 @@
     <div class="chart-card">
       <h3 class="chart-title">Netflix's Greenlight Confidence Model: House of Cards</h3>
       <p class="chart-subtitle">Composite signal score (0-100) across five data dimensions. Reference line shows the standard pilot-greenlight threshold.</p>
-      <div class="chart-container chart-h-380" id="confidence-chart"></div>
+      <div class="chart-container chart-h-380"><canvas id="confidence-chart"></canvas></div>
     </div>
     <p class="data-note">Reconstructed from public reporting on Netflix's data science process, 2012-2013.</p>
 
@@ -866,7 +866,7 @@
     <div class="chart-card">
       <h3 class="chart-title">Binge Velocity: Season Completion Rate by Day</h3>
       <p class="chart-subtitle">% of viewers who started the season and completed it, tracked daily. House of Cards (S1, 2013) vs. Breaking Bad S5 (AMC/Netflix, 2012) vs. Netflix Drama Average.</p>
-      <div class="chart-container chart-h-380" id="binge-chart"></div>
+      <div class="chart-container chart-h-380"><canvas id="binge-chart"></canvas></div>
     </div>
     <p class="data-note">Breaking Bad S5 figures based on AMC ratings data and Netflix streaming analytics reported in industry press, 2012-2013.</p>
 
@@ -904,7 +904,7 @@
     <div class="chart-card">
       <h3 class="chart-title">Personalized vs. Generic Trailer: Click-Through Rate by Segment</h3>
       <p class="chart-subtitle">Estimated CTR for matched behavioral segment trailer vs. Netflix's standard one-size campaign. The delta is the case for personalization.</p>
-      <div class="chart-container chart-h-520" id="trailer-chart"></div>
+      <div class="chart-container chart-h-520"><canvas id="trailer-chart"></canvas></div>
     </div>
     <p class="data-note">CTR estimates reconstructed from Netflix's public statements on personalized marketing, industry analyst benchmarks, and reported trailer testing methodology.</p>
 
@@ -960,7 +960,7 @@
     <div class="chart-card" style="margin-top: 40px;">
       <h3 class="chart-title">The Flywheel: Netflix Global Subscribers After House of Cards (2011-2024)</h3>
       <p class="chart-subtitle">Global subscriber count (millions) with key original content releases annotated. The growth rate shift in 2013 is the House of Cards effect.</p>
-      <div class="chart-container chart-h-380" id="subscriber-chart"></div>
+      <div class="chart-container chart-h-380"><canvas id="subscriber-chart"></canvas></div>
     </div>
     <p class="data-note">Source: Netflix quarterly earnings reports (Q4 2011 through Q4 2024). Global subscriber totals.</p>
 
@@ -1099,382 +1099,403 @@
   </div>
 </footer>
 
-<!-- ════════════════════════ REACT + RECHARTS ════════════════════════ -->
-<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-<script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js" crossorigin></script>
+<!-- ════════════════════════ CHART.JS ════════════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
 
 <script>
 (function () {
   'use strict';
 
-  const h = React.createElement;
-  const {
-    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-    ResponsiveContainer, AreaChart, Area, BarChart, Bar, ReferenceLine,
-    Cell, LabelList, ComposedChart
-  } = Recharts;
+  /* ── Chart.js global defaults ─────────────── */
+  Chart.defaults.color = '#8a93b8';
+  Chart.defaults.font.family = "'Poppins', sans-serif";
+  Chart.defaults.font.size = 11;
 
-  /* Shared theme */
-  const GRID   = { stroke: 'rgba(255,255,255,0.055)', strokeDasharray: '3 3' };
-  const TICK   = { fill: '#8a93b8', fontSize: 11, fontFamily: 'Poppins,sans-serif' };
-  const AXIS_L = { stroke: 'rgba(255,255,255,0.09)' };
-  const TIP_STYLE = {
-    background: '#0d0d35',
-    border: '1px solid rgba(127,119,221,0.48)',
-    borderRadius: '10px',
-    padding: '12px 16px',
-    color: '#eeeeff',
-    fontSize: '13px',
-    fontFamily: 'Poppins,sans-serif',
-    boxShadow: '0 8px 32px rgba(0,0,0,0.55)'
+  const GRID_COLOR  = 'rgba(255,255,255,0.07)';
+  const PURPLE      = '#7F77DD';
+  const PURPLE_LITE = '#a59fea';
+  const AMBER       = '#f59e0b';
+  const SLATE       = '#475569';
+  const TEAL        = '#4BC8C0';
+
+  const tooltipPlugin = {
+    backgroundColor: '#0d0d35',
+    borderColor: 'rgba(127,119,221,0.5)',
+    borderWidth: 1,
+    titleColor: PURPLE_LITE,
+    bodyColor: '#a0a8c8',
+    padding: 12,
+    cornerRadius: 10,
+    displayColors: true,
+    boxPadding: 4,
   };
 
-  /* ═══════════════════════════════════════════
-     CHART 2: CONFIDENCE SCORE
-     Horizontal bar chart of 5 signals + combined
-  ═══════════════════════════════════════════ */
-  const confidenceData = [
-    {
-      signal: 'Cross-Signal Correlation',
-      score: 96,
-      desc: 'Strength of behavioral link across all three audience clusters. High correlation means the same user profiles appear in all three datasets.'
-    },
-    {
-      signal: 'Genre Demand Gap',
-      score: 91,
-      desc: 'Political drama was the most-searched genre on Netflix with the fewest available titles. Supply was 3x below measured demand.'
-    },
-    {
-      signal: 'Franchise Fanbase Score',
-      score: 92,
-      desc: 'BBC House of Cards engagement metrics: rewatch rate, rating frequency, and post-session search behavior. Unusually high across all three.'
-    },
-    {
-      signal: 'Lead Actor Engagement Lift',
-      score: 88,
-      desc: "Kevin Spacey's catalog showed 30-40% above-average completion rates. Users who started a Spacey film almost never abandoned it."
-    },
-    {
-      signal: 'Director Brand Premium',
-      score: 85,
-      desc: "David Fincher's subscriber engagement index: long sessions, high scene-rewatch rates, and strong post-watch search activity."
-    },
-  ];
+  /* ════════════════════════════════════════════
+     CHART 2: CONFIDENCE SCORE (horizontal bar)
+  ════════════════════════════════════════════ */
+  function buildConfidenceChart() {
+    const labels = [
+      'Director Brand Premium',
+      'Lead Actor Engagement Lift',
+      'Franchise Fanbase Score',
+      'Genre Demand Gap',
+      'Cross-Signal Correlation',
+    ];
+    const scores = [85, 88, 92, 91, 96];
+    const descs = [
+      "Fincher's catalog: long sessions, high rewatch rates, strong post-watch search signals.",
+      "Spacey films averaged 30-40% above-platform completion. Rare viewer lock-in signal.",
+      "BBC HoC rewatch rate, unprompted ratings, and political-drama search clusters were all top-decile.",
+      "Political drama was Netflix's most-searched genre with the fewest titles available — 3x demand gap.",
+      "The same subscriber profiles appeared in all three clusters. Statistically extraordinary overlap.",
+    ];
+    const colors = scores.map(s => `rgba(127,119,221,${0.45 + (s - 85) / 55 * 0.5})`);
 
-  function ConfidenceTip({ active, payload }) {
-    if (!active || !payload || !payload.length) return null;
-    const d = payload[0].payload;
-    return h('div', { style: { ...TIP_STYLE, maxWidth: 280 } },
-      h('p', { style: { fontWeight: 700, color: '#a59fea', marginBottom: 4, fontSize: 12 } }, d.signal),
-      h('p', { style: { color: '#7F77DD', fontWeight: 700, fontSize: 22, lineHeight: 1, marginBottom: 8 } }, `${d.score}/100`),
-      h('p', { style: { color: '#a0a8c8', fontSize: 11.5, lineHeight: 1.55 } }, d.desc)
-    );
-  }
-
-  function ConfidenceChart() {
-    return h(ResponsiveContainer, { width: '100%', height: '100%' },
-      h(BarChart, { layout: 'vertical', data: confidenceData, margin: { top: 10, right: 90, left: 14, bottom: 10 } },
-        h(CartesianGrid, { ...GRID, horizontal: false }),
-        h(XAxis, {
-          type: 'number', domain: [0, 100],
-          tick: TICK, axisLine: AXIS_L, tickLine: false,
-          tickFormatter: v => `${v}`
-        }),
-        h(YAxis, {
-          type: 'category', dataKey: 'signal', width: 200,
-          tick: { ...TICK, fontSize: 11, textAnchor: 'end' },
-          axisLine: false, tickLine: false
-        }),
-        h(Tooltip, { content: h(ConfidenceTip), cursor: { fill: 'rgba(127,119,221,0.06)' } }),
-        /* Pilot threshold reference line */
-        h(ReferenceLine, {
-          x: 65,
-          stroke: '#4B9FE1',
-          strokeDasharray: '5 3',
-          strokeWidth: 1.5,
-          label: {
-            value: 'Pilot threshold (65)',
-            position: 'top',
-            fill: '#4B9FE1',
-            fontSize: 10.5,
-            fontFamily: 'Poppins,sans-serif'
-          }
-        }),
-        h(Bar, {
-          dataKey: 'score', name: 'Signal Score',
-          radius: [0, 6, 6, 0], maxBarSize: 32,
-          fill: '#7F77DD'
-        },
-          ...confidenceData.map((_, i) =>
-            h(Cell, {
-              key: i,
-              fill: `rgba(127,119,221,${0.55 + (i * 0.09)})`
-            })
-          ),
-          h(LabelList, {
-            dataKey: 'score',
-            position: 'right',
-            formatter: v => `${v}/100`,
-            style: { fill: '#a59fea', fontSize: 12, fontFamily: 'Poppins,sans-serif', fontWeight: 700 }
-          })
-        ),
-        /* Combined score annotation */
-        h(ReferenceLine, {
-          x: 94,
-          stroke: '#c0b4ff',
-          strokeDasharray: '4 2',
-          strokeWidth: 2,
-          label: {
-            value: 'Combined: 94',
-            position: 'insideTopRight',
-            fill: '#c0b4ff',
-            fontSize: 11,
-            fontFamily: 'Poppins,sans-serif',
-            fontWeight: 700
-          }
-        })
-      )
-    );
-  }
-
-  /* ═══════════════════════════════════════════
-     CHART 3: BINGE VELOCITY LINE CHART
-  ═══════════════════════════════════════════ */
-  const bingeData = [
-    { day:  0, hoc: 0,  bb: 0,  avg: 0  },
-    { day:  1, hoc: 35, bb: 11, avg: 8  },
-    { day:  2, hoc: 52, bb: 16, avg: 13 },
-    { day:  3, hoc: 61, bb: 21, avg: 17 },
-    { day:  5, hoc: 72, bb: 29, avg: 24 },
-    { day:  7, hoc: 80, bb: 37, avg: 31 },
-    { day: 10, hoc: 86, bb: 49, avg: 40 },
-    { day: 14, hoc: 90, bb: 61, avg: 49 },
-    { day: 21, hoc: 93, bb: 72, avg: 60 },
-    { day: 30, hoc: 95, bb: 81, avg: 69 },
-  ];
-
-  function BingeTip({ active, payload, label }) {
-    if (!active || !payload || !payload.length) return null;
-    return h('div', { style: TIP_STYLE },
-      h('p', { style: { fontWeight: 600, color: '#a59fea', marginBottom: 8 } }, `Day ${label}`),
-      ...payload.map(p =>
-        h('p', { key: p.dataKey, style: { color: p.color, margin: '3px 0' } },
-          `${p.name}: ${p.value}%`
-        )
-      )
-    );
-  }
-
-  function BingeChart() {
-    return h(ResponsiveContainer, { width: '100%', height: '100%' },
-      h(LineChart, { data: bingeData, margin: { top: 24, right: 28, left: 10, bottom: 36 } },
-        h(CartesianGrid, GRID),
-        h(XAxis, {
-          dataKey: 'day', tick: TICK, axisLine: AXIS_L, tickLine: false,
-          label: { value: 'Days after full season release', position: 'insideBottom', offset: -22, fill: '#8a93b8', fontSize: 11.5, fontFamily: 'Poppins,sans-serif' }
-        }),
-        h(YAxis, {
-          tick: TICK, axisLine: false, tickLine: false,
-          tickFormatter: v => `${v}%`, domain: [0, 100],
-          label: { value: '% who completed Season 1', angle: -90, position: 'insideLeft', offset: 20, fill: '#8a93b8', fontSize: 11, fontFamily: 'Poppins,sans-serif' }
-        }),
-        h(Tooltip, { content: h(BingeTip) }),
-        h(Legend, {
-          wrapperStyle: { color: '#8a93b8', fontSize: 12, fontFamily: 'Poppins,sans-serif', paddingTop: 10 },
-          iconType: 'plainline'
-        }),
-        /* 72-hour reference line */
-        h(ReferenceLine, {
-          x: 3, stroke: '#c0b4ff', strokeDasharray: '4 3', strokeWidth: 1.5,
-          label: { value: '61% by Hour 72', position: 'insideTopRight', fill: '#c0b4ff', fontSize: 10.5, fontFamily: 'Poppins,sans-serif' }
-        }),
-        h(Line, {
-          type: 'monotone', dataKey: 'hoc', name: 'House of Cards S1',
-          stroke: '#7F77DD', strokeWidth: 3,
-          dot: { fill: '#7F77DD', r: 4, strokeWidth: 0 },
-          activeDot: { r: 7, fill: '#7F77DD', stroke: '#fff', strokeWidth: 2 }
-        }),
-        h(Line, {
-          type: 'monotone', dataKey: 'bb', name: 'Breaking Bad S5',
-          stroke: '#f59e0b', strokeWidth: 2, strokeDasharray: '5 3',
-          dot: { fill: '#f59e0b', r: 3, strokeWidth: 0 },
-          activeDot: { r: 6, fill: '#f59e0b' }
-        }),
-        h(Line, {
-          type: 'monotone', dataKey: 'avg', name: 'Netflix Drama Average',
-          stroke: '#4a5568', strokeWidth: 2, strokeDasharray: '7 4',
-          dot: { fill: '#4a5568', r: 2.5, strokeWidth: 0 },
-          activeDot: { r: 5, fill: '#6b7480' }
-        })
-      )
-    );
-  }
-
-  /* ═══════════════════════════════════════════
-     CHART 4: TRAILER CTR MATCHED vs GENERIC
-     Grouped horizontal bar chart
-  ═══════════════════════════════════════════ */
-  const trailerData = [
-    { segment: 'Documentary Style Viewers',  personalized: 22, generic: 11 },
-    { segment: 'International Drama Fans',   personalized: 25, generic: 12 },
-    { segment: 'Film Buff / Cinephile',      personalized: 28, generic: 14 },
-    { segment: 'Award Show Watchers',        personalized: 29, generic: 15 },
-    { segment: 'Thriller Fans',              personalized: 31, generic: 18 },
-    { segment: 'Strong Female Lead Viewers', personalized: 35, generic: 20 },
-    { segment: 'David Fincher Fans',         personalized: 36, generic: 22 },
-    { segment: 'Kevin Spacey Fans',          personalized: 38, generic: 19 },
-    { segment: 'Political Drama Fans',       personalized: 42, generic: 25 },
-    { segment: 'Binge Watchers',             personalized: 45, generic: 28 },
-  ];
-
-  function TrailerTip({ active, payload }) {
-    if (!active || !payload || !payload.length) return null;
-    const d = payload[0].payload;
-    const lift = d.personalized - d.generic;
-    return h('div', { style: { ...TIP_STYLE, maxWidth: 240 } },
-      h('p', { style: { fontWeight: 700, color: '#a59fea', marginBottom: 8, fontSize: 12 } }, d.segment),
-      h('p', { style: { color: '#7F77DD', margin: '3px 0' } }, `Personalized: ${d.personalized}% CTR`),
-      h('p', { style: { color: '#4a5568', margin: '3px 0' } }, `Generic: ${d.generic}% CTR`),
-      h('p', { style: { color: '#4ade80', fontWeight: 700, marginTop: 8, fontSize: 12 } }, `+${lift}pt lift from personalization`)
-    );
-  }
-
-  function TrailerChart() {
-    return h(ResponsiveContainer, { width: '100%', height: '100%' },
-      h(BarChart, {
-        layout: 'vertical',
-        data: trailerData,
-        margin: { top: 8, right: 48, left: 14, bottom: 8 }
+    new Chart(document.getElementById('confidence-chart'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Signal Score / 100',
+          data: scores,
+          backgroundColor: colors,
+          borderColor: colors.map(() => PURPLE),
+          borderWidth: 0,
+          borderRadius: 6,
+          borderSkipped: false,
+        }]
       },
-        h(CartesianGrid, { ...GRID, horizontal: false }),
-        h(XAxis, {
-          type: 'number', domain: [0, 50],
-          tick: TICK, axisLine: AXIS_L, tickLine: false,
-          tickFormatter: v => `${v}%`
-        }),
-        h(YAxis, {
-          type: 'category', dataKey: 'segment', width: 188,
-          tick: { ...TICK, fontSize: 10.5 }, axisLine: false, tickLine: false
-        }),
-        h(Tooltip, { content: h(TrailerTip), cursor: { fill: 'rgba(127,119,221,0.06)' } }),
-        h(Legend, {
-          wrapperStyle: { color: '#8a93b8', fontSize: 12, fontFamily: 'Poppins,sans-serif', paddingTop: 8 }
-        }),
-        h(Bar, {
-          dataKey: 'generic', name: 'Generic Trailer CTR',
-          fill: '#2d3748', radius: [0, 4, 4, 0], maxBarSize: 18
-        }),
-        h(Bar, {
-          dataKey: 'personalized', name: 'Matched Trailer CTR',
-          fill: '#7F77DD', radius: [0, 6, 6, 0], maxBarSize: 18
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            ...tooltipPlugin,
+            callbacks: {
+              title: (items) => labels[items[0].dataIndex],
+              label: (item) => ` Score: ${item.raw}/100`,
+              afterLabel: (item) => descs[item.dataIndex],
+            }
+          },
+          annotation: {
+            annotations: {
+              pilotLine: {
+                type: 'line', scaleID: 'x', value: 65,
+                borderColor: '#4B9FE1', borderWidth: 2,
+                borderDash: [6, 3],
+                label: {
+                  display: true, content: 'Pilot threshold  65',
+                  position: 'start', color: '#4B9FE1',
+                  backgroundColor: 'rgba(13,13,53,0.85)',
+                  font: { size: 11, weight: '600' }, padding: 4,
+                }
+              },
+              combinedLine: {
+                type: 'line', scaleID: 'x', value: 94,
+                borderColor: '#c0b4ff', borderWidth: 2,
+                borderDash: [4, 2],
+                label: {
+                  display: true, content: 'Combined: 94/100',
+                  position: 'end', color: '#c0b4ff',
+                  backgroundColor: 'rgba(13,13,53,0.85)',
+                  font: { size: 11, weight: '700' }, padding: 4,
+                }
+              }
+            }
+          }
         },
-          h(LabelList, {
-            dataKey: 'personalized', position: 'right',
-            formatter: v => `${v}%`,
-            style: { fill: '#a59fea', fontSize: 11, fontFamily: 'Poppins,sans-serif', fontWeight: 600 }
-          })
-        )
-      )
-    );
-  }
-
-  /* ═══════════════════════════════════════════
-     CHART 5: SUBSCRIBER GROWTH AREA CHART
-  ═══════════════════════════════════════════ */
-  const subData = [
-    { year: '2011', subs: 23.6,  label: '' },
-    { year: '2012', subs: 33.3,  label: '' },
-    { year: '2013', subs: 44.4,  label: 'House of Cards + OITNB' },
-    { year: '2014', subs: 57.4,  label: 'HoC S2, 9 new originals' },
-    { year: '2015', subs: 74.8,  label: 'Narcos, Daredevil' },
-    { year: '2016', subs: 93.8,  label: 'Stranger Things, The Crown' },
-    { year: '2017', subs: 117.6, label: 'Mindhunter, Glow' },
-    { year: '2018', subs: 139.3, label: 'Ozark, Bodyguard' },
-    { year: '2019', subs: 167.1, label: 'The Witcher' },
-    { year: '2020', subs: 203.7, label: 'Tiger King, Bridgerton' },
-    { year: '2021', subs: 221.8, label: 'Squid Game' },
-    { year: '2022', subs: 231.3, label: '' },
-    { year: '2023', subs: 260.3, label: 'Password sharing crackdown' },
-    { year: '2024', subs: 301.6, label: 'Ad-supported tier expansion' },
-  ];
-
-  function SubTip({ active, payload, label }) {
-    if (!active || !payload || !payload.length) return null;
-    const d = payload[0].payload;
-    return h('div', { style: TIP_STYLE },
-      h('p', { style: { fontWeight: 600, color: '#a59fea', marginBottom: 6 } }, label),
-      h('p', { style: { color: '#7F77DD', fontWeight: 700, fontSize: 20 } }, `${payload[0].value}M subscribers`),
-      d.label && h('p', { style: { color: '#6b7299', fontSize: 11, marginTop: 6 } }, d.label)
-    );
-  }
-
-  function SubscriberChart() {
-    return h(ResponsiveContainer, { width: '100%', height: '100%' },
-      h(AreaChart, { data: subData, margin: { top: 28, right: 28, left: 10, bottom: 36 } },
-        h('defs', null,
-          h('linearGradient', { id: 'subGrad', x1: '0', y1: '0', x2: '0', y2: '1' },
-            h('stop', { offset: '0%',   stopColor: '#7F77DD', stopOpacity: 0.42 }),
-            h('stop', { offset: '100%', stopColor: '#7F77DD', stopOpacity: 0.02 })
-          )
-        ),
-        h(CartesianGrid, GRID),
-        h(XAxis, {
-          dataKey: 'year', tick: TICK, axisLine: AXIS_L, tickLine: false,
-          label: { value: 'Year', position: 'insideBottom', offset: -22, fill: '#8a93b8', fontSize: 11.5, fontFamily: 'Poppins,sans-serif' }
-        }),
-        h(YAxis, {
-          tick: TICK, axisLine: false, tickLine: false,
-          tickFormatter: v => `${v}M`,
-          label: { value: 'Global Subscribers', angle: -90, position: 'insideLeft', offset: 20, fill: '#8a93b8', fontSize: 11, fontFamily: 'Poppins,sans-serif' }
-        }),
-        h(Tooltip, { content: h(SubTip) }),
-        /* House of Cards launch reference */
-        h(ReferenceLine, {
-          x: '2013', stroke: '#c0b4ff', strokeDasharray: '4 3', strokeWidth: 2,
-          label: {
-            value: 'House of Cards launches',
-            position: 'insideTopRight',
-            fill: '#c0b4ff', fontSize: 10.5,
-            fontFamily: 'Poppins,sans-serif', fontWeight: 600
+        scales: {
+          x: {
+            min: 0, max: 100,
+            grid: { color: GRID_COLOR },
+            ticks: { callback: v => `${v}`, color: '#8a93b8' },
+            border: { color: 'transparent' },
+          },
+          y: {
+            grid: { display: false },
+            ticks: { color: '#a0a8c8', font: { size: 11 } },
+            border: { color: 'transparent' },
           }
-        }),
-        /* Squid Game annotation */
-        h(ReferenceLine, {
-          x: '2021', stroke: '#4BC8C0', strokeDasharray: '4 3', strokeWidth: 1.5,
-          label: {
-            value: 'Squid Game',
-            position: 'insideTopRight',
-            fill: '#4BC8C0', fontSize: 10,
-            fontFamily: 'Poppins,sans-serif'
-          }
-        }),
-        h(Area, {
-          type: 'monotone', dataKey: 'subs', name: 'Global Subscribers (M)',
-          stroke: '#7F77DD', strokeWidth: 2.5,
-          fill: 'url(#subGrad)',
-          dot: { fill: '#fff', stroke: '#7F77DD', strokeWidth: 2, r: 4 },
-          activeDot: { r: 7, fill: '#7F77DD', stroke: '#fff', strokeWidth: 2 }
-        })
-      )
-    );
-  }
-
-  /* ── Mount all charts on load ──────────────── */
-  window.addEventListener('load', function () {
-    [
-      { id: 'confidence-chart',  C: ConfidenceChart  },
-      { id: 'binge-chart',       C: BingeChart       },
-      { id: 'trailer-chart',     C: TrailerChart     },
-      { id: 'subscriber-chart',  C: SubscriberChart  },
-    ].forEach(function ({ id, C }) {
-      const el = document.getElementById(id);
-      if (el) ReactDOM.createRoot(el).render(h(C));
+        }
+      }
     });
+  }
+
+  /* ════════════════════════════════════════════
+     CHART 3: BINGE VELOCITY (line chart)
+  ════════════════════════════════════════════ */
+  function buildBingeChart() {
+    const labels = [0, 1, 2, 3, 5, 7, 10, 14, 21, 30];
+    const hoc    = [0, 35, 52, 61, 72, 80, 86, 90, 93, 95];
+    const bb     = [0, 11, 16, 21, 29, 37, 49, 61, 72, 81];
+    const avg    = [0,  8, 13, 17, 24, 31, 40, 49, 60, 69];
+
+    new Chart(document.getElementById('binge-chart'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'House of Cards S1',
+            data: hoc,
+            borderColor: PURPLE, borderWidth: 3,
+            backgroundColor: 'rgba(127,119,221,0.12)',
+            pointBackgroundColor: PURPLE, pointRadius: 4, pointHoverRadius: 7,
+            tension: 0.4, fill: false,
+          },
+          {
+            label: 'Breaking Bad S5',
+            data: bb,
+            borderColor: AMBER, borderWidth: 2,
+            borderDash: [6, 3],
+            pointBackgroundColor: AMBER, pointRadius: 3, pointHoverRadius: 6,
+            tension: 0.4, fill: false,
+          },
+          {
+            label: 'Netflix Drama Average',
+            data: avg,
+            borderColor: SLATE, borderWidth: 2,
+            borderDash: [8, 4],
+            pointBackgroundColor: SLATE, pointRadius: 2.5, pointHoverRadius: 5,
+            tension: 0.4, fill: false,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: { color: '#a0a8c8', padding: 20, usePointStyle: true, pointStyleWidth: 24 }
+          },
+          tooltip: {
+            ...tooltipPlugin,
+            callbacks: {
+              title: (i) => `Day ${i[0].label}`,
+              label: (i) => ` ${i.dataset.label}: ${i.raw}%`
+            }
+          },
+          annotation: {
+            annotations: {
+              day3: {
+                type: 'line', scaleID: 'x', value: 3,
+                borderColor: '#c0b4ff', borderWidth: 1.5, borderDash: [4, 3],
+                label: {
+                  display: true, content: '61% by Hour 72',
+                  position: 'end', color: '#c0b4ff',
+                  backgroundColor: 'rgba(13,13,53,0.85)',
+                  font: { size: 10.5, weight: '600' }, padding: 4
+                }
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            title: { display: true, text: 'Days after full season release', color: '#8a93b8', font: { size: 11 } },
+            grid: { color: GRID_COLOR },
+            ticks: { color: '#8a93b8' },
+            border: { color: 'transparent' },
+          },
+          y: {
+            min: 0, max: 100,
+            title: { display: true, text: '% who completed Season 1', color: '#8a93b8', font: { size: 11 } },
+            grid: { color: GRID_COLOR },
+            ticks: { callback: v => `${v}%`, color: '#8a93b8' },
+            border: { color: 'transparent' },
+          }
+        }
+      }
+    });
+  }
+
+  /* ════════════════════════════════════════════
+     CHART 4: TRAILER CTR MATCHED vs GENERIC
+  ════════════════════════════════════════════ */
+  function buildTrailerChart() {
+    const segments = [
+      'Documentary Style',
+      'International Drama',
+      'Film Buff / Cinephile',
+      'Award Show Watchers',
+      'Thriller Fans',
+      'Strong Female Lead',
+      'David Fincher Fans',
+      'Kevin Spacey Fans',
+      'Political Drama Fans',
+      'Binge Watchers',
+    ];
+    const personalized = [22, 25, 28, 29, 31, 35, 36, 38, 42, 45];
+    const generic      = [11, 12, 14, 15, 18, 20, 22, 19, 25, 28];
+
+    new Chart(document.getElementById('trailer-chart'), {
+      type: 'bar',
+      data: {
+        labels: segments,
+        datasets: [
+          {
+            label: 'Generic Trailer CTR',
+            data: generic,
+            backgroundColor: 'rgba(71,85,105,0.7)',
+            borderRadius: 4,
+            borderSkipped: false,
+          },
+          {
+            label: 'Matched Trailer CTR',
+            data: personalized,
+            backgroundColor: PURPLE,
+            borderRadius: 6,
+            borderSkipped: false,
+          }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: { color: '#a0a8c8', padding: 20, usePointStyle: true }
+          },
+          tooltip: {
+            ...tooltipPlugin,
+            callbacks: {
+              title: (i) => segments[i[0].dataIndex],
+              label: (i) => ` ${i.dataset.label}: ${i.raw}%`,
+              afterBody: (items) => {
+                const p = personalized[items[0].dataIndex];
+                const g = generic[items[0].dataIndex];
+                return [`\n+${p - g}pt lift from personalization`];
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            min: 0, max: 50,
+            grid: { color: GRID_COLOR },
+            ticks: { callback: v => `${v}%`, color: '#8a93b8' },
+            border: { color: 'transparent' },
+          },
+          y: {
+            grid: { display: false },
+            ticks: { color: '#a0a8c8', font: { size: 10.5 } },
+            border: { color: 'transparent' },
+          }
+        }
+      }
+    });
+  }
+
+  /* ════════════════════════════════════════════
+     CHART 5: SUBSCRIBER GROWTH (area line)
+  ════════════════════════════════════════════ */
+  function buildSubscriberChart() {
+    const years = ['2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021','2022','2023','2024'];
+    const subs  = [23.6, 33.3, 44.4, 57.4, 74.8, 93.8, 117.6, 139.3, 167.1, 203.7, 221.8, 231.3, 260.3, 301.6];
+    const notes = ['','','House of Cards + OITNB','HoC S2, 9 new originals','Narcos, Daredevil',
+                   'Stranger Things, The Crown','Mindhunter, Glow','Ozark, Bodyguard',
+                   'The Witcher','Tiger King, Bridgerton','Squid Game','','Password crackdown','Ad-tier expansion'];
+
+    new Chart(document.getElementById('subscriber-chart'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [{
+          label: 'Global Subscribers (M)',
+          data: subs,
+          borderColor: PURPLE,
+          borderWidth: 2.5,
+          backgroundColor: function(ctx) {
+            const chart = ctx.chart;
+            const { chartArea } = chart;
+            if (!chartArea) return 'rgba(127,119,221,0.15)';
+            const grad = chart.ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+            grad.addColorStop(0, 'rgba(127,119,221,0.42)');
+            grad.addColorStop(1, 'rgba(127,119,221,0.02)');
+            return grad;
+          },
+          fill: true,
+          pointBackgroundColor: '#fff',
+          pointBorderColor: PURPLE,
+          pointBorderWidth: 2,
+          pointRadius: 5,
+          pointHoverRadius: 8,
+          tension: 0.35,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            ...tooltipPlugin,
+            callbacks: {
+              title: (i) => i[0].label,
+              label: (i) => ` ${i.raw}M subscribers`,
+              afterLabel: (i) => notes[i.dataIndex] ? `  ${notes[i.dataIndex]}` : '',
+            }
+          },
+          annotation: {
+            annotations: {
+              hocLine: {
+                type: 'line', scaleID: 'x', value: '2013',
+                borderColor: '#c0b4ff', borderWidth: 2, borderDash: [5, 3],
+                label: {
+                  display: true, content: 'House of Cards launches',
+                  position: 'start', color: '#c0b4ff',
+                  backgroundColor: 'rgba(13,13,53,0.88)',
+                  font: { size: 11, weight: '600' }, padding: 5, yAdjust: -8,
+                }
+              },
+              squidLine: {
+                type: 'line', scaleID: 'x', value: '2021',
+                borderColor: TEAL, borderWidth: 1.5, borderDash: [4, 3],
+                label: {
+                  display: true, content: 'Squid Game',
+                  position: 'end', color: TEAL,
+                  backgroundColor: 'rgba(13,13,53,0.88)',
+                  font: { size: 10.5 }, padding: 4, yAdjust: -8,
+                }
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            title: { display: true, text: 'Year', color: '#8a93b8', font: { size: 11 } },
+            grid: { color: GRID_COLOR },
+            ticks: { color: '#8a93b8' },
+            border: { color: 'transparent' },
+          },
+          y: {
+            title: { display: true, text: 'Global Subscribers (Millions)', color: '#8a93b8', font: { size: 11 } },
+            grid: { color: GRID_COLOR },
+            ticks: { callback: v => `${v}M`, color: '#8a93b8' },
+            border: { color: 'transparent' },
+          }
+        }
+      }
+    });
+  }
+
+  /* ── Boot all charts ───────────────────────── */
+  document.addEventListener('DOMContentLoaded', function () {
+    buildConfidenceChart();
+    buildBingeChart();
+    buildTrailerChart();
+    buildSubscriberChart();
   });
 
   /* ════════════════════════════════════════════
-     VENN INTERACTION
+     VENN INTERACTION + UI
   ════════════════════════════════════════════ */
   document.addEventListener('DOMContentLoaded', function () {
     const tooltip  = document.getElementById('venn-tooltip');
