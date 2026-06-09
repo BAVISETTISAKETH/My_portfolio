@@ -249,7 +249,7 @@ const BLOG_POSTS = [
     readTime: "9 min read",
     tags: ["Product Analytics", "Case Study", "Data-Driven Decisions"],
     description: "How Netflix used behavioral signals from 27 million subscribers to greenlight House of Cards without filming a single pilot. A breakdown of the three signals, the confidence model, and the $100M bet that changed the industry.",
-    href: "/blogs/netflix-house-of-cards.html",
+    href: `${import.meta.env.BASE_URL}blogs/netflix-house-of-cards.html`,
     stats: [
       { label: "Investment", value: "$100M" },
       { label: "Pilots Filmed", value: "0" },
