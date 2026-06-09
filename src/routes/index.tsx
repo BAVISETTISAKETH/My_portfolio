@@ -882,8 +882,6 @@ function Blog() {
             <MagneticCard className="h-full">
               <a
                 href={post.href}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="group flex flex-col h-full glass-strong rounded-3xl p-8 hover:border-primary/40 transition-all duration-300 border border-transparent"
               >
                 {/* Stats bar */}
