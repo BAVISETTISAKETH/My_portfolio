@@ -953,6 +953,40 @@ function Blog() {
 
 // ─── Contact ──────────────────────────────────────────────────────────────────
 
+function LinkedInBadge() {
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://platform.linkedin.com/badges/js/profile.js";
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  return (
+    <div
+      className="badge-base LI-profile-badge"
+      data-locale="en_US"
+      data-size="large"
+      data-theme="dark"
+      data-type="HORIZONTAL"
+      data-vanity="sai-saketh-bavisetti"
+      data-version="v1"
+    >
+      <a
+        className="badge-base__link LI-simple-link"
+        href="https://www.linkedin.com/in/sai-saketh-bavisetti?trk=profile-badge"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Sai Saketh Bavisetti
+      </a>
+    </div>
+  );
+}
+
 function Contact() {
   return (
     <section id="contact" className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 py-20 sm:py-32">
@@ -975,6 +1009,9 @@ function Contact() {
             </motion.a>
           </div>
         </div>
+      </Reveal>
+      <Reveal delay={0.15} className="mt-10 flex justify-center">
+        <LinkedInBadge />
       </Reveal>
     </section>
   );
