@@ -172,12 +172,12 @@ const ROLES = [
   {
     co: "San Francisco State Univ.", role: "Data Scientist, Graduate Research Asst.", time: "Jan 2024 - Dec 2025", loc: "San Francisco, CA",
     bullets: [
-      "Designed and shipped ML pipelines for 3 concurrent faculty research projects covering student retention, academic performance prediction, and NLP-driven query resolution, keeping all models version-controlled and reproducible in documented Python notebooks.",
-      "Built Python and SQL data pipelines processing 500K+ institutional records across 2 active studies, cutting data-prep turnaround from days to hours and directly supporting 2 faculty conference submissions.",
-      "Served as Teaching Assistant for CSC 775 Databases and CSC 841 Computer Performance Evaluation, graded 60+ deliverables per semester and ran weekly office hours that consistently kept re-submission rates low each term.",
-      "Applied ANOVA, chi-square, and multivariate logistic regression in R and Python across 1,000+ student survey responses, with findings feeding directly into an early-intervention framework adopted by the university advising office.",
-      "Built Tableau and Power BI dashboards that translated dense research output into formats non-technical advisors and department heads could act on, with the student retention dashboard picked up as a live daily decision tool.",
-      "Collaborated with 4 faculty members across Computer Science and Public Health on grant-aligned research, scoping open-ended questions into defined data problems with clear success metrics and handoff-ready documentation.",
+      "Graded HCI course deliverables for Prof. Sanika Doolani, evaluating Figma wireframes, UX research artifacts, and interaction design prototypes for 30+ students per cycle with structured written feedback that faculty cited as directly improving revision quality.",
+      "Co-facilitated an Intro to Generative AI course, designed lab materials, ran hands-on sessions covering LLMs and prompt engineering, and helped students without technical backgrounds build working GenAI prototypes from scratch.",
+      "Designed Figma wireframes and contributed to UX research for HCI lab projects, translating research findings into product-ready design artifacts and supporting prototype evaluation across multiple research tracks.",
+      "Built Python and SQL pipelines processing 500K+ institutional records for 2 active faculty research studies, cutting data-prep turnaround from days to hours and directly supporting 2 conference submissions.",
+      "Applied ANOVA, chi-square, and logistic regression in R and Python across student survey datasets, with findings feeding into an early-intervention dashboard adopted by the university advising office as a live decision tool.",
+      "Worked directly with Prof. Sanika Doolani across HCI research, teaching, and lab initiatives over 2 years, building the depth of product and research experience that led to the Red Lab AI PM and Analyst role.",
     ],
   },
   {
