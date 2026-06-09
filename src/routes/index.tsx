@@ -170,6 +170,17 @@ const ROLES = [
     ],
   },
   {
+    co: "San Francisco State Univ.", role: "Data Scientist, Graduate Research Asst.", time: "Jan 2024 - Dec 2025", loc: "San Francisco, CA",
+    bullets: [
+      "Designed and shipped ML pipelines for 3 concurrent faculty research projects covering student retention, academic performance prediction, and NLP-driven query resolution, keeping all models version-controlled and reproducible in documented Python notebooks.",
+      "Built Python and SQL data pipelines processing 500K+ institutional records across 2 active studies, cutting data-prep turnaround from days to hours and directly supporting 2 faculty conference submissions.",
+      "Served as Teaching Assistant for CSC 775 Databases and CSC 841 Computer Performance Evaluation, graded 60+ deliverables per semester and ran weekly office hours that consistently kept re-submission rates low each term.",
+      "Applied ANOVA, chi-square, and multivariate logistic regression in R and Python across 1,000+ student survey responses, with findings feeding directly into an early-intervention framework adopted by the university advising office.",
+      "Built Tableau and Power BI dashboards that translated dense research output into formats non-technical advisors and department heads could act on, with the student retention dashboard picked up as a live daily decision tool.",
+      "Collaborated with 4 faculty members across Computer Science and Public Health on grant-aligned research, scoping open-ended questions into defined data problems with clear success metrics and handoff-ready documentation.",
+    ],
+  },
+  {
     co: "NY State - Dept. of Health", role: "Data Analyst Intern", time: "Jul 2024 - Dec 2024", loc: "Albany, NY",
     bullets: [
       "Owned requirements for 25 public health KPIs across all 62 NY counties, writing UAT test cases and acceptance criteria that 3 engineering teams actually used.",
