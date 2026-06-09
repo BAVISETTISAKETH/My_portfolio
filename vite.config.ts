@@ -5,6 +5,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
+  base: "/My_portfolio/",
   plugins: [
     react(),
     tailwindcss(),
@@ -21,8 +22,8 @@ export default defineConfig({
         background_color: "#1E272E",
         display: "standalone",
         orientation: "portrait-primary",
-        scope: "/",
-        start_url: "/",
+        scope: "/My_portfolio/",
+        start_url: "/My_portfolio/",
         icons: [
           { src: "pwa-64x64.png", sizes: "64x64", type: "image/png" },
           { src: "pwa-192x192.png", sizes: "192x192", type: "image/png" },
