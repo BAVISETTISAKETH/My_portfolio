@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://bavisettisaketh.github.io/My_portfolio/sitemap.xml
